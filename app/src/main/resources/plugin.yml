@@ -1,0 +1,8 @@
+name: GP_Printer2
+version: 1.0.0
+main: intelliractive.printer2.App
+#description:
+author: [Intelliractive, Ilyushya]
+website: https://goodplacego.github.io
+api-version: '1.20'
+prefix: GP_Printer2
