@@ -10,11 +10,13 @@
     The game differs depending on the coherence of the team of players.
     The game is over when all the blocks are printed.
  */
-@file:Suppress("DEPRECATION")
+//@file:Suppress("DEPRECATION")
 
 package intelliractive.printer2
 
-import net.kyori.adventure.sound.Sound
+//import kotlinx.coroutines.*
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Bukkit.*
 import org.bukkit.Location
 import org.bukkit.event.EventHandler
@@ -23,7 +25,7 @@ import org.bukkit.event.player.PlayerJoinEvent
 
 class Game : Listener {
     // Состояние игры
-    var isStarted = false
+    private var isStarted = false
 
     // Событие - игрок присоединился
     @EventHandler
@@ -37,30 +39,34 @@ class Game : Listener {
         } else {
             // if the game is not started, but there are enough players, start the game
 //            if (getServer().onlinePlayers.size >= 2)
-                countDownAndStart()
+            countDownAndStart()
         }
     }
 
     // Отсчёт до игры
-    fun countDownAndStart() {
-        for (i in 1..10) {
-            getServer().broadcastMessage("&aИгра начнётся через &e" + i + "&r&a секунд")
-            try {
-                Thread.sleep(1000)
-            } catch (e: InterruptedException) {
-                e.printStackTrace()
+    private fun countDownAndStart() {
+        Thread{Runnable {
+            broadcast(Component.text("Скоро начнём", TextColor.color(255, 255, 255)))
+
+            for (i in 1..10) {
+                getServer().broadcastMessage("&aИгра начнётся через &e" + i + "&r&a секунд")
+                try {
+                    Thread.sleep(1000)
+                } catch (e: InterruptedException) {
+                    e.printStackTrace()
+                }
             }
-        }
 
-        // set the game to started
-        isStarted = true
+            // set the game to started
+            isStarted = true
 
-        getServer().broadcastMessage("&bИГРА СТАРТУЕТ!")
-        start()
+            getServer().broadcastMessage("&bИГРА СТАРТУЕТ!")
+            start()
+        }}.start()
     }
 
     // Алгоритм игры
-    fun start() {
+    private fun start() {
         // Игроки телепортируются на игровое поле.
         getOnlinePlayers().forEach { player ->
 //            getServer().getWorld("world")?.let { player.teleport(it.spawnLocation) }
@@ -82,5 +88,10 @@ class Game : Listener {
 //        for (row in picture.grid.reversed()) {
 //
 //        }
+
+        // Конец игры
+        isStarted = false
     }
 }
+
+
