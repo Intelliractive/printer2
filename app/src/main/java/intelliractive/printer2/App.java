@@ -3,11 +3,8 @@
  */
 package intelliractive.printer2;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Level;
@@ -24,12 +21,12 @@ public class App extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(this, this);
-        Bukkit.getPluginManager().registerEvents(new Game(), this);
-        getLogger().log(Level.INFO, "&eGame loaded!");
+        Bukkit.getPluginManager().registerEvents(new Game(this), this);
+        getLogger().log(Level.FINE, "Game loaded!");
     }
 
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        event.getPlayer().sendMessage(Component.text("&aПривет, " + event.getPlayer().getName() + "!"));
-    }
+//    @EventHandler
+//    public void onPlayerJoin(PlayerJoinEvent event) {
+//        event.getPlayer().sendMessage(Component.text("&aПривет, " + event.getPlayer().getName() + "!"));
+//    }
 }

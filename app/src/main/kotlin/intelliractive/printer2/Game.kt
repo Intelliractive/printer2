@@ -10,7 +10,7 @@
     The game differs depending on the coherence of the team of players.
     The game is over when all the blocks are printed.
  */
-//@file:Suppress("DEPRECATION")
+@file:Suppress("KDocMissingDocumentation")
 
 package intelliractive.printer2
 
@@ -23,56 +23,70 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 
-class Game : Listener {
+open class Game(val plugin: App) : Listener {
     // Состояние игры
-    private var isStarted = false
+    var isStarted = false
 
     // Событие - игрок присоединился
     @EventHandler
     fun onPlayerJoin(event: PlayerJoinEvent) {
         // greet the player
-        event.player.sendMessage("&bПривет! Игра скоро начнётся!")
+        event.player.sendMessage(Component.text("Привет! Игра скоро начнётся!", TextColor.color(255, 255, 255)))
 
         // if the game is already started, don't count down
-        if (isStarted) {
+        if (isStarted == true) {
+            getLogger().warning("Игра уже запущена")
             return
         } else {
             // if the game is not started, but there are enough players, start the game
-//            if (getServer().onlinePlayers.size >= 2)
+            // if (getServer().onlinePlayers.size >= 2)
             countDownAndStart()
         }
     }
 
     // Отсчёт до игры
-    private fun countDownAndStart() {
-        Thread{Runnable {
-            broadcast(Component.text("Скоро начнём", TextColor.color(255, 255, 255)))
+    fun countDownAndStart() {
+        getLogger().finest("Counting down")
 
-            for (i in 1..10) {
-                getServer().broadcastMessage("&aИгра начнётся через &e" + i + "&r&a секунд")
-                try {
-                    Thread.sleep(1000)
-                } catch (e: InterruptedException) {
-                    e.printStackTrace()
-                }
+        broadcast(Component.text("Скоро начнём", TextColor.color(255, 255, 255)))
+
+        for (i in 1..10) {
+            getOnlinePlayers().forEach { player ->
+                getScheduler().runTaskLater(plugin, { ->
+                    player.sendMessage(Component.text("Игра начнётся через $i секунд", TextColor.color(255, 255, 255)))
+                }, 20)
+                /* С начальным таймером
+                getScheduler().runTaskTimer(plugin, { ->
+                    player.sendMessage(Component.text("Игра начнётся через $i секунд", TextColor.color(255, 255, 255)))
+                }, 20, 20) */
             }
+        }
 
-            // set the game to started
-            isStarted = true
+        // set the game to started
+        isStarted = true
 
-            getServer().broadcastMessage("&bИГРА СТАРТУЕТ!")
-            start()
-        }}.start()
+        getOnlinePlayers().forEach { player ->
+            player.sendMessage(
+                Component.text(
+                    "ИГРА СТАРТУЕТ!",
+                    TextColor.color(255, 255, 255)
+                )
+            )
+        }
+        start()
     }
 
     // Алгоритм игры
-    private fun start() {
+    fun start() {
+        getLogger().finest("Starting game")
+
         // Игроки телепортируются на игровое поле.
         getOnlinePlayers().forEach { player ->
-//            getServer().getWorld("world")?.let { player.teleport(it.spawnLocation) }
             getServer().getWorld("world")?.let { player.teleport(Location(getWorld("world"), 0.0, 0.0, 0.0)) }
-            Thread.sleep(1000)
-            getServer().getWorld("world")?.let { player.setJumping(true) }
+
+            getScheduler().runTaskLaterAsynchronously(plugin, { ->
+                getServer().getWorld("world")?.let { player.setJumping(true) }
+            }, 20)
         }
 
         /* Each row of a picture is a list of blocks. From the end to beginning, a row is selected.
