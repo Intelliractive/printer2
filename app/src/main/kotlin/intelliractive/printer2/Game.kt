@@ -22,20 +22,21 @@ import org.bukkit.Location
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
+import java.util.logging.Level
 
 open class Game(val plugin: App) : Listener {
     // Состояние игры
-    var isStarted = false
+    var isStarted: Boolean = false
 
     // Событие - игрок присоединился
     @EventHandler
     fun onPlayerJoin(event: PlayerJoinEvent) {
         // greet the player
-        event.player.sendMessage(Component.text("Привет! Игра скоро начнётся!", TextColor.color(255, 255, 255)))
+        event.player.sendMessage(Component.text("Привет! Игра скоро начнётся!", TextColor.color(10, 20, 255)))
 
         // if the game is already started, don't count down
-        if (isStarted == true) {
-            getLogger().warning("Игра уже запущена")
+        if (isStarted) {
+            getLogger().log(Level.SEVERE, "Игра уже запущена")
             return
         } else {
             // if the game is not started, but there are enough players, start the game
@@ -46,21 +47,11 @@ open class Game(val plugin: App) : Listener {
 
     // Отсчёт до игры
     fun countDownAndStart() {
-        getLogger().finest("Counting down")
+        getLogger().log(Level.FINER, "Counting down")
 
-        broadcast(Component.text("Скоро начнём", TextColor.color(255, 255, 255)))
+        broadcast(Component.text("Скоро начнём", TextColor.color(90, 80, 100)))
 
-        for (i in 1..10) {
-            getOnlinePlayers().forEach { player ->
-                getScheduler().runTaskLater(plugin, { ->
-                    player.sendMessage(Component.text("Игра начнётся через $i секунд", TextColor.color(255, 255, 255)))
-                }, 20)
-                /* С начальным таймером
-                getScheduler().runTaskTimer(plugin, { ->
-                    player.sendMessage(Component.text("Игра начнётся через $i секунд", TextColor.color(255, 255, 255)))
-                }, 20, 20) */
-            }
-        }
+        Countdown(10).start()
 
         // set the game to started
         isStarted = true
@@ -69,7 +60,7 @@ open class Game(val plugin: App) : Listener {
             player.sendMessage(
                 Component.text(
                     "ИГРА СТАРТУЕТ!",
-                    TextColor.color(255, 255, 255)
+                    TextColor.color(0, 200, 0)
                 )
             )
         }
@@ -78,14 +69,15 @@ open class Game(val plugin: App) : Listener {
 
     // Алгоритм игры
     fun start() {
-        getLogger().finest("Starting game")
+        getLogger().log(Level.FINER, "Starting game")
 
         // Игроки телепортируются на игровое поле.
         getOnlinePlayers().forEach { player ->
-            getServer().getWorld("world")?.let { player.teleport(Location(getWorld("world"), 0.0, 0.0, 0.0)) }
+            player.teleport(Location(getWorld("world"), -3.0, -50.0, -1.0))
 
             getScheduler().runTaskLaterAsynchronously(plugin, { ->
-                getServer().getWorld("world")?.let { player.setJumping(true) }
+                getScheduler().getMainThreadExecutor(plugin)
+                    .execute { getServer().getWorld("world")?.let { player.isJumping = true } }
             }, 20)
         }
 
