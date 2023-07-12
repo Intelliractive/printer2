@@ -51,24 +51,20 @@ open class Game(val plugin: App) : Listener {
 
         broadcast(Component.text("Скоро начнём", TextColor.color(90, 80, 100)))
 
-        Countdown(10).start()
+        var countdown = Countdown(10)
+        countdown.start()
+
+        getScheduler().runTaskLaterAsynchronously(plugin, { ->
+            if (countdown.state == "off")
+                beginGame()
+        }, 210)
 
         // set the game to started
         isStarted = true
-
-        getOnlinePlayers().forEach { player ->
-            player.sendMessage(
-                Component.text(
-                    "ИГРА СТАРТУЕТ!",
-                    TextColor.color(0, 200, 0)
-                )
-            )
-        }
-        start()
     }
 
     // Алгоритм игры
-    fun start() {
+    public fun beginGame() {
         getLogger().log(Level.FINER, "Starting game")
 
         // Игроки телепортируются на игровое поле.

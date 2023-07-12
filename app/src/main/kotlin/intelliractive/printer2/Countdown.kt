@@ -8,11 +8,22 @@ import org.bukkit.Bukkit.getOnlinePlayers
 import org.bukkit.scheduler.BukkitRunnable
 /** #### Отсчёт до игры*/
 class Countdown(private var seconds: Int) {
+    var state = "on"
     fun start() {
         object : BukkitRunnable() {
             override fun run() {
                 if (seconds <= 0) {
                     // Timer has finished
+
+                    getOnlinePlayers().forEach { player ->
+                        player.sendMessage(
+                            Component.text(
+                                "ИГРА СТАРТУЕТ!",
+                                TextColor.color(0, 200, 0)
+                            )
+                        )
+                    }
+                    state = "off"
                     cancel()
                 } else {
                     getOnlinePlayers().forEach { player ->
