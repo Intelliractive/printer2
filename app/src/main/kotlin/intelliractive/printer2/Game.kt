@@ -77,6 +77,7 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
                             //     broadcast(Component.text("Недостаточно игроков!", TextColor.color(255, 0, 0)))
                         }
                     }
+                    preGameCDBar?.removeViewer(player)
                 }
                 preGameTimer.start()
             })
@@ -93,7 +94,7 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
     fun countDownAndStart(goingToPlay: MutableList<Player>) {
         broadcast(Component.text("Скоро начнём", TextColor.color(90, 80, 100)))
 
-        val countdown = Countdown(11)
+        val countdown = Countdown(10)
         countdown.task = {
             broadcast(Component.text("ИГРА СТАРТУЕТ!", TextColor.color(0, 200, 0)))
 
