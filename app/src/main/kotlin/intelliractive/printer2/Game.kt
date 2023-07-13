@@ -60,6 +60,7 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
                     BossBar.Color.GREEN,
                     BossBar.Overlay.PROGRESS
                 )
+                preGameCDBar?.addViewer(player)
                 preGameTimer.tick = {
                     // broadcast(Component.text("Ожидание игроков ещё ${preGameTimer.seconds} секунд", TextColor.color(255, 255, 0)))
                     preGameCDBar?.progress(preGameTimer.seconds.toFloat() / 6)
