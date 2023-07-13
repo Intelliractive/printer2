@@ -3,12 +3,12 @@
 
     The game goes like this: players enter, with a sufficient number of players, the game begins.
     A picture is selected that will be printed by a large printer.
-    The picture is divided into blocks. Picture size is 10 by 10.
-    Players are "jets" that have their own color (a cell in the inventory is selected).
-    Printing takes place line by line, 1-2 blocks depending on the number of players.
-    The goal is to print the picture correctly (each block is in right place and of right color).
-    The game differs depending on the coherence of the team of players.
-    The game is over when all the blocks are printed.
+    Players are "jets" that have their own material (a cell in the inventory is selected).
+    Printing takes place line by line, 1 block at a time.
+    Depending on the number of players, certain blocks have already been placed: if there are 10 players, then there are none, if there are fewer, a block has already been placed in place of the missing players.
+    The places in which to put blocks (if there are less than 10 players) are determined in advance.
+    The goal is to print the picture correctly (each block is in place and of the correct color).
+    The game is special for its dependence on the coherence of the players' team.
  */
 @file:Suppress("KDocMissingDocumentation")
 
@@ -51,7 +51,7 @@ open class Game(val plugin: App) : Listener {
 
         broadcast(Component.text("Скоро начнём", TextColor.color(90, 80, 100)))
 
-        var countdown = Countdown(10)
+        val countdown = Countdown(10)
         countdown.start()
 
         getScheduler().runTaskLaterAsynchronously(plugin, { ->
@@ -64,7 +64,7 @@ open class Game(val plugin: App) : Listener {
     }
 
     // Алгоритм игры
-    public fun beginGame() {
+    fun beginGame() {
         getLogger().log(Level.FINER, "Starting game")
 
         // Игроки телепортируются на игровое поле.
