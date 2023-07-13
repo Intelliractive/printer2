@@ -104,6 +104,8 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
             }
 
             if (goingToPlay.isNotEmpty()) {
+                // set the game to started
+                isStarted = true
                 beginGame(goingToPlay)
                 // set the game to started
                 isStarted = true
