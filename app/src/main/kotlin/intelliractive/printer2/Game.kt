@@ -32,7 +32,7 @@ open class Game(val plugin: App) : Listener {
     var isStarted: Boolean = false
 
     // a list of players that are going to play
-    var goingToPlay = mutableListOf<Player>()
+    var goingToPlay: MutableList<Player> = mutableListOf()
 
     // Событие - игрок присоединился
     @EventHandler
