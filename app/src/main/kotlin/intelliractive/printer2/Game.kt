@@ -73,9 +73,8 @@ open class Game(val plugin: App) : Listener {
 
     @EventHandler
     fun onPlayerQuit(event: PlayerQuitEvent) {
-        val player = event.player
-        if (player in goingToPlay)
-            goingToPlay.remove(player)
+        if (event.player in goingToPlay)
+            goingToPlay.remove(event.player)
     }
 
     // Отсчёт до игры
