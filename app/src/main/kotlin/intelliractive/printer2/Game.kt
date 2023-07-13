@@ -134,5 +134,6 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
         // Конец игры
         isStarted = false
         goingToPlay.clear()
+        return
     }
 }
