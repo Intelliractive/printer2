@@ -1,4 +1,4 @@
-@file:Suppress("KDocMissingDocumentation")
+@file:Suppress("KDocMissingDocumentation", "ReplaceNotNullAssertionWithElvisReturn")
 package intelliractive.printer2
 
 import net.kyori.adventure.text.Component
@@ -7,9 +7,9 @@ import org.bukkit.Bukkit
 import org.bukkit.Bukkit.getOnlinePlayers
 import org.bukkit.scheduler.BukkitRunnable
 /** #### Отсчёт до игры*/
-class Countdown(private var seconds: Int) {
-    var state = "on"
-    fun start() {
+class Countdown(override var seconds: Int): Timer(seconds){
+    override var state: String = "on"
+    override fun start() {
         object : BukkitRunnable() {
             override fun run() {
                 if (seconds <= 0) {
