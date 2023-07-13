@@ -4,7 +4,7 @@ package intelliractive.printer2
 
 import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitRunnable
-open class Timer(open var seconds: Int) {
+open class Timer(open var seconds: Int, open var task: () -> Unit = {-> }) {
     open var state: String = "on"
     open fun start() {
         object : BukkitRunnable() {
@@ -14,6 +14,7 @@ open class Timer(open var seconds: Int) {
                     state = "off"
                     cancel()
                 } else {
+                    task()
                     // Decrement the timer
                     seconds--
                 }
