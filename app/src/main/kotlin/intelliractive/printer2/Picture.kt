@@ -1,4 +1,4 @@
-@file:Suppress("unused", "UnusedImport")
+@file:Suppress("KDocMissingDocumentation", "unused", "UnusedImport", "SpellCheckingInspection")
 
 package intelliractive.printer2
 import org.bukkit.Material
@@ -79,8 +79,8 @@ import org.bukkit.Material.YELLOW_STAINED_GLASS as yglass
 /** ## Картинки
  * Здесь содердатся все картинки в форме списка со списками, явл. горизонтальными рядами, из кот. состоит картинка. Их 10 (размер картинки: 10*10).
  * @since the beginning */
-enum class Picture(val grid: List<List<Material>>) {
-    Cup(listOf(
+enum class Picture(val rusName: String, val grid: List<List<Material>>) {
+    Cup("Чашка", listOf(
         listOf(ww, ww, ww, ww, ow, ww, ww, ww, ww, ww),
         listOf(ww, ww, ww, ww, ow, ww, ww, ow, ww, ww),
         listOf(ww, ww, ww, ow, ww, ww, ow, ww, ww, ww),
@@ -95,7 +95,7 @@ enum class Picture(val grid: List<List<Material>>) {
         listOf(blw, blw, lbt, lbt, lbt, lbt, lbt, ww, blw, blw),
         listOf(lbt, blw, blw, blw, blw, blw, blw, blw, ww, lbt)
     )),
-    VillageHouse(listOf(
+    VillageHouse("Деревенский домик", listOf(
         listOf(lbw, lbw, lbw, lbw, lbw, lbw, lbw, lbw, lbw, lbw),
         listOf(lbw, wc, wc, lbw, lbw, lbw, lbw, lbw, lbw, lbw),
         listOf(lbw, wc, wc, lbw, lbw, lbw, opl, opl, opl, lbw),
@@ -109,7 +109,7 @@ enum class Picture(val grid: List<List<Material>>) {
         listOf(DIRT, DIRT, grass, grass, grass, DIRT, DIRT, DIRT, DIRT, DIRT)
     )),
     /** ### Была построена первой! */
-    Cow(listOf(
+    Cow("Коровка", listOf(
         listOf(ww, wc, wc, ww, lbw, ww, ww, lbw, yc, yc),
         listOf(wc, ww, wc, ww, lbw, ww, ww, lbw, yc, ycp),
         listOf(ww, wc, ww, lbw, lbw, ww, brt, lbw, lbw, yc),
@@ -124,7 +124,7 @@ enum class Picture(val grid: List<List<Material>>) {
 
         listOf(lc, lc, bw, bw, lbc, lw, bw, bw, lc, lc),
         )),
-    Beach(listOf(
+    Beach("Пляж", listOf(
         listOf(ycp, yc, lbw, lbc, lbc, lbc, lbc, lbc, ww, ww),
         listOf(yc, yc, lbw, lbw, lbc, lbc, ww, ww, ww, ww),
         listOf(lbw, lbw, lbw, lbw, lbc, lbc, lbc, lbc, lbc, lbc),
@@ -136,7 +136,7 @@ enum class Picture(val grid: List<List<Material>>) {
         listOf(ycp, ycp, ycp, ycp, lbcp, wcp, wcp, wcp, wcp, lbcp),
         listOf(ycp, ycp, ycp, ycp, lbcp, lbcp, lbcp, lbcp, lbcp, lbcp)
     )),
-    Aquarium(listOf(
+    Aquarium("Аквариум", listOf(
         listOf(wc, lbc, lbc, lbc, lbc, lbc, lbc, lbc, lbc, blw),
         listOf(lbc, lbc, lbc, lbc, lbc, lbc, yw, yw, blcp, ocp),
         listOf(lbc, wcp, lbc, lbc, lbc, bw, yw, yw, bw, bw),
@@ -148,7 +148,7 @@ enum class Picture(val grid: List<List<Material>>) {
         listOf(ocp, rcp, lbc, lbc, lbc, lbc, lw, lw, lcp, lcp),
         listOf(rcp, ocp, rcp, rcp, lbc, lbc, lbc, lw, lbc, lcp)
     )),
-    WinterNight(listOf(
+    WinterNight("Ночь зимой", listOf(
         listOf(wc, ww, ww, ww, wc, lbt, bt, bt, bt, web),
         listOf(wc, ww, ww, ww, wc, lbt, bt, bt, web, web),
         listOf(wc, ww, ww, ww, wc, lbt, bt, bt, web, bt),
@@ -160,7 +160,7 @@ enum class Picture(val grid: List<List<Material>>) {
         listOf(snow, snow, snow, snow, bt, bt, DARK_OAK_TRAPDOOR, dopl, dopl, dopl),// или дверь?
         listOf(snow, snow, snow, snow, snow, snow, dopl, dopl, dopl, dopl)
     )),
-    Burger(listOf(
+    Burger("Бургер", listOf(
         listOf(yc, yc, yc, yc, yc, yc, yc, yc, yc, yc),
         listOf(yc, yc, yc, yc, yc, yc, yc, yc, yc, yc),
         listOf(ycp, ycp, ycp, ycp, ycp, ycp, ycp, ycp, ycp, ycp),
@@ -172,7 +172,7 @@ enum class Picture(val grid: List<List<Material>>) {
         listOf(yc, yc, yc, yc, yc, yc, ocp, yc, yc, yc),
         listOf(yc, yc, yc, yc, yc, yc, yc, yc, yc, yc),
     )),
-    Roblox(listOf(
+    Roblox("Роблокс", listOf(
         listOf(gc, gc, gc, gc, gc, gc, gc, gc, gc, gc),
         listOf(gc, gc, gc, gc, wc, gc, gc, gc, gc, gc),
         listOf(gc, gc, gc, wc, wc, wc, wc, gc, gc, gc),
@@ -184,7 +184,7 @@ enum class Picture(val grid: List<List<Material>>) {
         listOf(gc, gc, gc, gc, wc, wc, wc, wc, gc, gc),
         listOf(gc, gc, gc, gc, gc, gc, wc, gc, gc, gc),
     )),
-    LegoFace(listOf(
+    LegoFace("Лего-лицо", listOf(
         listOf(ycp, ycp, ycp, ycp, ycp, ycp, ycp, ycp, ycp, ycp),
         listOf(ycp, ycp, ycp, ycp, ycp, ycp, ycp, ycp, ycp, ycp),
 
@@ -199,7 +199,7 @@ enum class Picture(val grid: List<List<Material>>) {
         listOf(ycp, ycp, blackcp, blackcp, blackcp, blackcp, blackcp, blackcp, ycp, ycp),
         listOf(ycp, ycp, ycp, ycp, ycp, ycp, ycp, ycp, ycp, ycp)
     )),
-    RobloxConfidentFace(listOf(
+    RobloxConfidentFace("Роблокс - 'Уверенное лицо'", listOf(
         listOf(wc, wc, wc, wc, wc, wc, wc, wc, wc, wc),
         listOf(wc, bc, bc, wc, wc, wc, wc, bc, bc, wc),
         listOf(wc, wc, wc, wc, wc, wc, wc, wc, wc, wc),
@@ -216,7 +216,7 @@ enum class Picture(val grid: List<List<Material>>) {
         listOf(wc, wc, wc, wc, wc, wc, wc, wc, wc, wc),
         listOf(wc, wc, wc, wc, wc, wc, wc, wc, wc, wc)
     )),
-    Sackboy(listOf(
+    Sackboy("СэкбоЙ", listOf(
         listOf(brw, brw, brw, brw, brw, brw, brw, brw, brw, brw),
         listOf(brw, brw, brw, brw, brw, brw, brw, brw, brw, brw),
 
@@ -234,7 +234,7 @@ enum class Picture(val grid: List<List<Material>>) {
 
         listOf(brw, brw, brw, brw, brw, brw, brw, brw, brw, brw),
     )),
-    AmongUsRed(listOf(
+    AmongUsRed("'Among Us' - Красный", listOf(
         listOf(lbt, bt, bt, bt, bt, lbt, bt, bt, bt, bt),
         listOf(bt, bt, lbt, rw, rw, rw, rw, bt, bt, bt),
         listOf(bt, bw, bw, bw, bw, rw, rw, rw, bt, bt),
