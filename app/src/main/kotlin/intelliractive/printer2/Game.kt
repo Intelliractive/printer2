@@ -21,7 +21,6 @@ import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Bukkit.*
 import org.bukkit.Location
-import org.bukkit.entity.Horse
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -107,8 +106,6 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
                 // set the game to started
                 isStarted = true
                 beginGame(goingToPlay)
-                // set the game to started
-                isStarted = true
             }
         }
         countdown.start()
