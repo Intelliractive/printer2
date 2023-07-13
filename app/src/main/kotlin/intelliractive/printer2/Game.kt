@@ -53,7 +53,15 @@ open class Game(val plugin: App) : Listener {
             })
         )
 
-        val preGameTimer = Timer(6)
+        var preGameTimer = Timer(6)
+        preGameTimer.task = { ->
+            broadcast(
+                Component.text(
+                    "Ожидание игроков ещё ${preGameTimer.seconds} секунд",
+                    TextColor.color(255, 255, 0)
+                )
+            )
+        }
         preGameTimer.start()
         getScheduler().runTaskLaterAsynchronously(plugin, { ->
             if (preGameTimer.state == "off" && goingToPlay.isNotEmpty())
@@ -67,7 +75,7 @@ open class Game(val plugin: App) : Listener {
                     // if (getServer().onlinePlayers.size >= 2)
                     countDownAndStart(goingToPlay)
                 }
-        }, 6 * 20)
+        }, 122)
 
     }
 
