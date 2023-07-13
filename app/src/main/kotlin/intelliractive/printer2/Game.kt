@@ -53,13 +53,13 @@ open class Game(val plugin: App) : Listener {
             })
         )
 
-        val preGameTimer = Timer(121)
+        val preGameTimer = Timer(6)
         preGameTimer.start()
         getScheduler().runTaskLaterAsynchronously(plugin, { ->
-            if (preGameTimer.state == "off")
+            if (preGameTimer.state == "off" && goingToPlay.isNotEmpty())
             // if the game is already started, don't count down
                 if (isStarted) {
-                    getLogger().log(Level.SEVERE, "Игра уже запущена")
+                    // getLogger().log(Level.SEVERE, "Игра уже запущена")
                     broadcast(Component.text("Игра уже запущена!", TextColor.color(255, 0, 0)))
                     return@runTaskLaterAsynchronously
                 } else {
@@ -67,7 +67,7 @@ open class Game(val plugin: App) : Listener {
                     // if (getServer().onlinePlayers.size >= 2)
                     countDownAndStart(goingToPlay)
                 }
-        }, 131)
+        }, 6 * 20)
 
     }
 
@@ -90,16 +90,15 @@ open class Game(val plugin: App) : Listener {
         if (goingToPlay.isNotEmpty()) {
 
             getScheduler().runTaskLaterAsynchronously(plugin, { ->
-                if (countdown.state == "off" && goingToPlay.isNotEmpty())
+                if (countdown.state == "off" && goingToPlay.isNotEmpty()) {
                     beginGame(goingToPlay)
-                else
+                    // set the game to started
+                    isStarted = true
+                } else {
                     return@runTaskLaterAsynchronously
+                }
             }, 210)
-
-            // set the game to started
-            isStarted = true
-        }
-        else {
+        } else {
             return
         }
     }
