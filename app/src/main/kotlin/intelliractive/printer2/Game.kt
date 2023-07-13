@@ -79,8 +79,6 @@ open class Game(val plugin: App) : Listener {
 
     // Отсчёт до игры
     fun countDownAndStart(goingToPlay: MutableList<Player>) {
-        // Repeating check of players in the game
-
         getLogger().log(Level.FINER, "Counting down")
 
         broadcast(Component.text("Скоро начнём", TextColor.color(90, 80, 100)))
