@@ -15,19 +15,20 @@
 package intelliractive.printer2
 
 //import kotlinx.coroutines.*
+import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Bukkit.*
 import org.bukkit.Location
+import org.bukkit.entity.Horse
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
-import java.util.logging.Level
 
-open class Game(val plugin: App) : Listener {
+class Game(val plugin: App) : Listener { // plugin не трогать! (нужно для Bukkit заданий)
     // Состояние игры
     var isStarted: Boolean = false
 
@@ -50,33 +51,36 @@ open class Game(val plugin: App) : Listener {
                         TextColor.color(0, 220, 0)
                     )
                 )
+
+                //// Таймер и отсчёт до игры
+                val preGameTimer = Timer(6)
+                var preGameCDBar: BossBar? = BossBar.bossBar(
+                    Component.text("Ожидание игроков ещё ${preGameTimer.seconds} секунд", TextColor.color(255, 255, 0)),
+                    0.0f,
+                    BossBar.Color.GREEN,
+                    BossBar.Overlay.PROGRESS
+                )
+                preGameTimer.tick = {
+                    // broadcast(Component.text("Ожидание игроков ещё ${preGameTimer.seconds} секунд", TextColor.color(255, 255, 0)))
+                    preGameCDBar?.progress(preGameTimer.seconds.toFloat() / 6)
+                }
+                preGameTimer.task = {
+                    if (goingToPlay.isNotEmpty()) {
+                        // if the game is already started, don't count down
+                        if (isStarted) {
+                            broadcast(Component.text("Игра уже запущена!", TextColor.color(255, 0, 0)))
+                        } else {
+                            // if the game is not started, but there are enough players, start the game
+                            // if (getServer().onlinePlayers.size >= 2)
+                            countDownAndStart(goingToPlay)
+                            // else
+                            //     broadcast(Component.text("Недостаточно игроков!", TextColor.color(255, 0, 0)))
+                        }
+                    }
+                }
+                preGameTimer.start()
             })
         )
-
-        var preGameTimer = Timer(6)
-        preGameTimer.task = { ->
-            broadcast(
-                Component.text(
-                    "Ожидание игроков ещё ${preGameTimer.seconds} секунд",
-                    TextColor.color(255, 255, 0)
-                )
-            )
-        }
-        preGameTimer.start()
-        getScheduler().runTaskLaterAsynchronously(plugin, { ->
-            if (preGameTimer.state == "off" && goingToPlay.isNotEmpty())
-            // if the game is already started, don't count down
-                if (isStarted) {
-                    // getLogger().log(Level.SEVERE, "Игра уже запущена")
-                    broadcast(Component.text("Игра уже запущена!", TextColor.color(255, 0, 0)))
-                    return@runTaskLaterAsynchronously
-                } else {
-                    // if the game is not started, but there are enough players, start the game
-                    // if (getServer().onlinePlayers.size >= 2)
-                    countDownAndStart(goingToPlay)
-                }
-        }, 122)
-
     }
 
     @EventHandler
@@ -87,43 +91,31 @@ open class Game(val plugin: App) : Listener {
 
     // Отсчёт до игры
     fun countDownAndStart(goingToPlay: MutableList<Player>) {
-        getLogger().log(Level.FINER, "Counting down")
-
         broadcast(Component.text("Скоро начнём", TextColor.color(90, 80, 100)))
 
         val countdown = Countdown(11)
-        countdown.start()
+        countdown.task = {
+            broadcast(Component.text("ИГРА СТАРТУЕТ!", TextColor.color(0, 200, 0)))
 
-        // check if there are still players in the game
-        if (goingToPlay.isNotEmpty()) {
+            // Игроки телепортируются на игровое поле.
+            goingToPlay.forEach { player ->
+                player.teleport(Location(getWorld("world"), -3.0, -49.0, -1.0))
+            }
 
-            getScheduler().runTaskLaterAsynchronously(plugin, { ->
-                if (countdown.state == "off" && goingToPlay.isNotEmpty()) {
-                    beginGame(goingToPlay)
-                    // set the game to started
-                    isStarted = true
-                } else {
-                    return@runTaskLaterAsynchronously
-                }
-            }, 210)
-        } else {
-            return
+            if (goingToPlay.isNotEmpty()) {
+                beginGame(goingToPlay)
+                // set the game to started
+                isStarted = true
+            }
         }
+        countdown.start()
     }
 
     // Алгоритм игры
     fun beginGame(goingToPlay: MutableList<Player>) {
-        getLogger().log(Level.FINER, "Starting game")
+        broadcast(Component.text("Старт!", TextColor.color(0, 200, 0)))
+        broadcast(Component.text("Играют: ${goingToPlay.joinToString(", ")}", TextColor.color(200, 200, 0)))
 
-        // Игроки телепортируются на игровое поле.
-        goingToPlay.forEach { player ->
-            player.teleport(Location(getWorld("world"), -3.0, -50.0, -1.0))
-
-            getScheduler().runTaskLaterAsynchronously(plugin, { ->
-                getScheduler().getMainThreadExecutor(plugin)
-                    .execute { getServer().getWorld("world")?.let { player.isJumping = true } }
-            }, 20)
-        }
 
         /* Each row of a picture is a list of blocks. From the end to beginning, a row is selected.
         Next players stand in place of a block and hold it ih their hand.
@@ -144,5 +136,3 @@ open class Game(val plugin: App) : Listener {
         goingToPlay.clear()
     }
 }
-
-
