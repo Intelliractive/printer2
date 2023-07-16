@@ -108,7 +108,7 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
             goingToPlay.remove(event.player)
     }
 
-    val Arcs: List<Location> = listOf(
+    val arcs: List<Location> = listOf(
         Location(getWorld("world"), -31.0, -60.0, 34.0),
         Location(getWorld("world"), -31.0, -60.0, 29.0),
         Location(getWorld("world"), -31.0, -60.0, 24.0),
@@ -138,7 +138,7 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
 
             // Игроки телепортируются под арку (случайную)
             goingToPlay.forEach {
-                it.teleport(Arcs.random())
+                it.teleport(arcs.random())
             }
 
             // Список игроков по командам
