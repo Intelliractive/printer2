@@ -34,7 +34,7 @@ import org.bukkit.event.player.PlayerQuitEvent
 
 class Game(val plugin: App) : Listener { // plugin не трогать! (нужно для Bukkit заданий)
     @EventHandler
-    fun onStarted(event: org.bukkit.event.world.WorldLoadEvent){
+    fun onStarted(event: org.bukkit.event.world.WorldLoadEvent) {
         dispatchCommand(getConsoleSender(), "team add green")
         dispatchCommand(getConsoleSender(), "team modify green collisionRule never")
         dispatchCommand(getConsoleSender(), "team modify green color green")
@@ -225,11 +225,12 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
         The game is over when all the rows are printed. */
 
         // Select a random picture
-//        val picture = Picture.entries.random()
-//
-//        for (row in picture.grid.reversed()) {
-//
-//        }
+        val picture = Picture.entries.random()
+        val hintRow = listOf<Location>()
+
+        for (row in picture.grid.reversed()) {
+
+        }
 
         // Конец игры
         isStarted = false
