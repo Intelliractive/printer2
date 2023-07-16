@@ -33,6 +33,19 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
 class Game(val plugin: App) : Listener { // plugin не трогать! (нужно для Bukkit заданий)
+    @EventHandler
+    fun onStarted(event: org.bukkit.event.world.WorldLoadEvent){
+        dispatchCommand(getConsoleSender(), "team add green")
+        dispatchCommand(getConsoleSender(), "team modify green collisionRule never")
+        dispatchCommand(getConsoleSender(), "team modify green color green")
+        dispatchCommand(getConsoleSender(), "team modify green nameTagVisibility never")
+
+        dispatchCommand(getConsoleSender(), "team add lightBlue")
+        dispatchCommand(getConsoleSender(), "team modify lightBlue collisionRule never")
+        dispatchCommand(getConsoleSender(), "team modify lightBlue color aqua")
+        dispatchCommand(getConsoleSender(), "team modify lightBlue nameTagVisibility never")
+    }
+
     // Состояние игры
     var isStarted: Boolean = false
 
