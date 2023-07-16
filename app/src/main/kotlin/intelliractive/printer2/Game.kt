@@ -33,8 +33,13 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
 class Game(val plugin: App) : Listener { // plugin не трогать! (нужно для Bukkit заданий)
-    @EventHandler
-    fun onStarted(event: org.bukkit.event.world.WorldLoadEvent) {
+    // Состояние игры
+    var isStarted: Boolean = false
+
+    // a list of players that are going to play
+    var goingToPlay: MutableList<Player> = mutableListOf()
+
+    fun createTeams() {
         dispatchCommand(getConsoleSender(), "team add green")
         dispatchCommand(getConsoleSender(), "team modify green collisionRule never")
         dispatchCommand(getConsoleSender(), "team modify green color green")
@@ -46,15 +51,11 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
         dispatchCommand(getConsoleSender(), "team modify lightBlue nameTagVisibility never")
     }
 
-    // Состояние игры
-    var isStarted: Boolean = false
-
-    // a list of players that are going to play
-    var goingToPlay: MutableList<Player> = mutableListOf()
-
     // Событие - игрок присоединился
     @EventHandler
     fun onPlayerJoin(event: PlayerJoinEvent) {
+        createTeams()
+
         val player = event.player
         // greet the player
         player.sendMessage(Component.text("Привет! Игра скоро начнётся!", TextColor.color(10, 20, 255)))
