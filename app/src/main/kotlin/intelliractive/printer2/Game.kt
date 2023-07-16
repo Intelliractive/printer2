@@ -159,21 +159,21 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
 
                 player.sendMessage(Component.text("Выбери команду!", TextColor.color(255, 0, 255)))
                 player.sendMessage(
-                    Component.text("[Голубая]", TextColor.color(0, 255, 255))
+                    Component.text("[Голубая]")
+                        .color(TextColor.color(0, 255, 255))
                         .clickEvent(
                             ClickEvent.callback {
-                                dispatchCommand(getConsoleSender(), "/sudo ${player.name} team join lightBlue")
+                                dispatchCommand(getConsoleSender(), "/execute as ${player.name} run team join lightBlue")
                                 lightBlueTeam.add(player)
                             }
                         )
-                        .append(Component.text(" ---- "))
-                        .append(Component.text("[Зелёная]", TextColor.color(0, 255, 0)))
-                        .clickEvent(
+                        .append(Component.text(" ---- ", TextColor.color(245, 245, 245)))
+                        .append(Component.text("[Зелёная]", TextColor.color(0, 255, 0)).clickEvent(
                             ClickEvent.callback {
-                                dispatchCommand(getConsoleSender(), "/sudo ${player.name} team join green")
+                                dispatchCommand(getConsoleSender(), "/execute as ${player.name} run team join green")
                                 greenTeam.add(player)
                             }
-                        )
+                        ))
                 )
             }
 
