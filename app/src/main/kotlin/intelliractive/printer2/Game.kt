@@ -220,6 +220,11 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
 
         // Конец игры
         isStarted = false
+        broadcast(Component.text("Игра окончена!", TextColor.color(0, 150, 190)))
+        goingToPlay.forEach { player ->
+            player.gameMode = GameMode.SURVIVAL
+            player.teleport(Locations.WaitingPlate.loc)
+        }
         goingToPlay.clear()
         return
     }
