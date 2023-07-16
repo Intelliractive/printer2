@@ -14,7 +14,7 @@
 
         Code comments are written in English and Russian.
  */
-@file:Suppress("KDocMissingDocumentation", "MemberVisibilityCanBePrivate")
+@file:Suppress("KDocMissingDocumentation", "MemberVisibilityCanBePrivate", "CanBeVal")
 
 package intelliractive.printer2
 
@@ -24,6 +24,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Bukkit.*
+import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -69,19 +70,18 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
                     preGameCDBar?.progress(preGameTimer.seconds.toFloat() / 6)
                 }
                 preGameTimer.task = {
-                    if (goingToPlay.isNotEmpty()) {
-                        // if the game is already started, don't count down
-                        if (isStarted) {
-                            broadcast(Component.text("Игра уже запущена!", TextColor.color(255, 0, 0)))
-                        } else {
-                            // if the game is not started, but there are enough players, start the game
-                            // if (getServer().onlinePlayers.size >= 2)
-                            if (goingToPlay.isNotEmpty())
-                                countDownAndStart(goingToPlay)
-                            // else
-                            //     broadcast(Component.text("Недостаточно игроков!", TextColor.color(255, 0, 0)))
-                        }
+                    // if the game is already started, don't count down
+                    if (isStarted) {
+                        broadcast(Component.text("Игра уже запущена!", TextColor.color(255, 0, 0)))
+                    } else {
+                        // if the game is not started, but there are enough players, start the game
+                        // if (getServer().onlinePlayers.size >= 2)
+                        if (goingToPlay.isNotEmpty())
+                            countDownAndStart(goingToPlay)
+                        // else
+                        //     broadcast(Component.text("Недостаточно игроков!", TextColor.color(255, 0, 0)))
                     }
+
                     preGameCDBar?.removeViewer(player)
                 }
                 preGameTimer.start()
@@ -95,7 +95,7 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
             goingToPlay.remove(event.player)
     }
 
-    val Arcs = listOf<Location>(
+    val Arcs: List<Location> = listOf(
         Location(getWorld("world"), -31.0, -60.0, 34.0),
         Location(getWorld("world"), -31.0, -60.0, 29.0),
         Location(getWorld("world"), -31.0, -60.0, 24.0),
@@ -114,7 +114,8 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
         broadcast(Component.text("Скоро начнём", TextColor.color(90, 80, 100)))
         Timer(1, task = {
             goingToPlay.forEach { player ->
-                player.teleport(Location(getWorld("world"), -3.0, -49.0, -1.0)) // площадка
+                player.teleport(Locations.WaitingPlate.loc)
+                player.gameMode = GameMode.ADVENTURE
             }
         }).start()
 
@@ -128,45 +129,73 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
             }
 
             // Список игроков по командам
-            var light_blue_team = mutableListOf<Player>()
-            var green_team = mutableListOf<Player>()
+            var lightBlueTeam = mutableListOf<Player>()
+            var greenTeam = mutableListOf<Player>()
+
+            // Полоса на выбор команд
+            var playersChooseTeamTimerBar: BossBar? = BossBar.bossBar(
+                Component.text("Ожидание выбора команды", TextColor.color(252, 186, 3)),
+                0.0F,
+                BossBar.Color.RED,
+                BossBar.Overlay.PROGRESS
+            )
 
             // Игроки выбирают команду
             goingToPlay.forEach { player ->
+                playersChooseTeamTimerBar?.addViewer(player)
+
                 player.sendMessage(Component.text("Выбери команду!", TextColor.color(255, 0, 255)))
                 player.sendMessage(
                     Component.text("[Голубая]", TextColor.color(0, 255, 255))
                         .clickEvent(
-//                            ClickEvent.runCommand("/sudo ${player.name} team join light_blue")
                             ClickEvent.callback {
-                                dispatchCommand(getConsoleSender(), "/sudo ${player.name} team join light_blue")
-                                light_blue_team.add(player)
+                                dispatchCommand(getConsoleSender(), "/sudo ${player.name} team join lightBlue")
+                                lightBlueTeam.add(player)
                             }
                         )
                         .append(Component.text(" ---- "))
                         .append(Component.text("[Зелёная]", TextColor.color(0, 255, 0)))
                         .clickEvent(
-//                            ClickEvent.runCommand("/sudo ${player.name} team join green")
                             ClickEvent.callback {
                                 dispatchCommand(getConsoleSender(), "/sudo ${player.name} team join green")
-                                green_team.add(player)
+                                greenTeam.add(player)
                             }
                         )
                 )
             }
 
-            // Игроки телепортируются на игровое поле.
-//            goingToPlay.forEach { player ->
-//                player.teleport(Location(getWorld("world"), -3.0, -49.0, -1.0)) // игровое поле
-//            }
+            val playersChooseTeamTimer = Timer(15, task = {
 
-            if (goingToPlay.isNotEmpty()) {
-                // set the game to started
-                isStarted = true
-                beginGame(goingToPlay)
+                // Игроки телепортируются на игровое поле.
+
+                lightBlueTeam.forEach { player ->
+                    player.teleport(Locations.Light_Blue_Game_Area.loc)
+                }
+
+                greenTeam.forEach { player ->
+                    player.teleport(Locations.Green_Game_Area.loc)
+                }
+
+
+                // Убирается полоса
+                goingToPlay.forEach {
+                    playersChooseTeamTimerBar?.removeViewer(it)
+                }
+
+                if (goingToPlay.isNotEmpty()) {
+                    // set the game to started
+                    isStarted = true
+                    beginGame(goingToPlay)
+                }
+            })
+            playersChooseTeamTimer.tick = {
+                playersChooseTeamTimerBar?.progress(playersChooseTeamTimer.seconds.toFloat() / 10)
             }
+            playersChooseTeamTimer.start()
+
         }
         countdown.start()
+
     }
 
     // Алгоритм игры
