@@ -3,10 +3,12 @@
 package intelliractive.printer2
 import org.bukkit.Material
 import org.bukkit.Material.*
+import org.bukkit.Material.GRAY_TERRACOTTA
 import org.bukkit.Material.COBWEB as web
 import  org.bukkit.Material.SNOW as snow
 import org.bukkit.Material.GRASS_BLOCK as grass
 
+import org.bukkit.Material.RED_CONCRETE as rc
 import org.bukkit.Material.WHITE_CONCRETE as wc
 import org.bukkit.Material.GRAY_CONCRETE as gc
 import org.bukkit.Material.GREEN_CONCRETE as grc
@@ -15,7 +17,9 @@ import org.bukkit.Material.BLACK_CONCRETE as bc
 import org.bukkit.Material.ORANGE_CONCRETE as oc
 import org.bukkit.Material.BROWN_CONCRETE as brc
 import org.bukkit.Material.LIGHT_BLUE_CONCRETE as lbc
+import org.bukkit.Material.BLUE_CONCRETE as blc
 import org.bukkit.Material.LIME_CONCRETE as lc
+import org.bukkit.Material.LIGHT_GRAY_CONCRETE as lgc
 
 import org.bukkit.Material.WHITE_CONCRETE_POWDER as wcp
 import org.bukkit.Material.BLACK_CONCRETE_POWDER as blackcp
@@ -71,6 +75,8 @@ import org.bukkit.Material.BRICKS as bricks
 import org.bukkit.Material.BRICK_STAIRS as brst
 
 import org.bukkit.Material.YELLOW_STAINED_GLASS as yglass
+import org.bukkit.Material.LIGHT_GRAY_STAINED_GLASS as lgrayglass
+
 //    PAPER(1), SCISSORS(2), ROCK(3);
 //    fun act() {
 //        println("Nothing")
@@ -80,6 +86,19 @@ import org.bukkit.Material.YELLOW_STAINED_GLASS as yglass
  * Здесь содердатся все картинки в форме списка со списками, явл. горизонтальными рядами, из кот. состоит картинка. Их 10 (размер картинки: 10*10).
  * @since the beginning */
 enum class Picture(val rusName: String, val grid: List<List<Material>>) {
+    `250ThndTonsOfTNT`("250 тысяч тонн тротила", listOf(
+        listOf(wc, lbc, lbc, lbc, ww, ww, lbc, lbc, lbc, lbc),
+        listOf(wc, lbc, ww, lbc, lbc, lbc, lbc, ww, lbc, lbc),
+        listOf(wc, wc, wc, wc, wc, wc, wc, lgrayglass, lgrayglass, lgrayglass),
+        listOf(wc, wc, lgc, lgc, lgc, wc, wc, wc, lgrayglass, lgrayglass),
+        listOf(lbc, lgc, lgc, lgc, lbc, lbc, lbc, lbc, lbc, lbc),
+        listOf(rc, wcp, lbc, lbc, rc, wcp, lbc, lbc, lbc, lbc),
+        listOf(wcp, rc, lbc, lbc, wcp, rc, lbc, lbc, lbc, lbc),
+
+        listOf(lbc, lgc, lgc, lgc, lbc, lbc, lbc, wt, lbc, wt),
+        listOf(lbc, lgc, lgc, lgc, lbc, lbc, lbc, grt, lbc, blc),
+        listOf(lw, lw, lw, lw, lw, lw, lw, lw, lw, lw),
+    )),
     Cup("Чашка", listOf(
         listOf(ww, ww, ww, ww, ow, ww, ww, ww, ww, ww),
         listOf(ww, ww, ww, ww, ow, ww, ww, ow, ww, ww),

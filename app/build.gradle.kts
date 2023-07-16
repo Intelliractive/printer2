@@ -12,6 +12,7 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     application
     java
+    groovy
     kotlin("jvm") version "1.9.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
@@ -24,7 +25,7 @@ repositories {
 
 dependencies {
     // Use JUnit Jupiter for testing.
-    testImplementation("org.junit.jupiter:junit-jupiter:5.9.1")
+//    testImplementation("org.junit.jupiter:junit-jupiter:5.9.1")
 
     // This dependency is used by the application.
     implementation("com.google.guava:guava:31.1-jre")
@@ -32,6 +33,8 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
     // Kotlin coroutines
 //    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2")
+
+    implementation("org.apache.groovy:groovy-all:4.0.13")
 //    implementation("org.codehaus.gpars:gpars:1.2.0")
 }
 
@@ -42,10 +45,11 @@ application {
     // application.applicationName = "Printer2"
 }
 
-tasks.named<Test>("test") {
-    // Use JUnit Platform for unit tests.
-    useJUnitPlatform()
-}
+//tasks.named<Test>("test") {
+//    // Use JUnit Platform for unit tests.
+//    useJUnitPlatform()
+//}
+
 //java {
 //    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 //}
