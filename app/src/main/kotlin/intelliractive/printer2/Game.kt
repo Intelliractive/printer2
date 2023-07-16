@@ -159,21 +159,21 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
 
                 player.sendMessage(Component.text("Выбери команду!", TextColor.color(255, 0, 255)))
                 player.sendMessage(
-                    Component.text("[Голубая]")
-                        .color(TextColor.color(0, 255, 255))
-                        .clickEvent(
-                            ClickEvent.callback {
-                                dispatchCommand(getConsoleSender(), "/execute as ${player.name} run team join lightBlue")
-                                lightBlueTeam.add(player)
-                            }
-                        )
-                        .append(Component.text(" ---- ", TextColor.color(245, 245, 245)))
-                        .append(Component.text("[Зелёная]", TextColor.color(0, 255, 0)).clickEvent(
+                    Component.text("[Голубая]", TextColor.color(0, 255, 255)).clickEvent(
+                        ClickEvent.callback {
+                            dispatchCommand(getConsoleSender(), "/execute as ${player.name} run team join lightBlue")
+                            lightBlueTeam.add(player)
+                        }
+                    )
+                )
+                player.sendMessage(Component.text(" ---- ", TextColor.color(245, 245, 245)))
+                player.sendMessage(
+                        Component.text("[Зелёная]", TextColor.color(0, 255, 0)).clickEvent(
                             ClickEvent.callback {
                                 dispatchCommand(getConsoleSender(), "/execute as ${player.name} run team join green")
                                 greenTeam.add(player)
                             }
-                        ))
+                        )
                 )
             }
 
@@ -225,12 +225,14 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
         The game is over when all the rows are printed. */
 
         // Select a random picture
-        val picture = Picture.entries.random()
-        val hintRow = listOf<Location>()
+//        val picture = Picture.entries.random()
+//        val hintRow = listOf<Location>(
+//
+//        )
 
-        for (row in picture.grid.reversed()) {
-
-        }
+//        for (row in picture.grid.reversed()) {
+//
+//        }
 
         // Конец игры
         isStarted = false
