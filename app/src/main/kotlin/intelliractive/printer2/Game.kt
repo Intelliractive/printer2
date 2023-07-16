@@ -76,7 +76,8 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
                         } else {
                             // if the game is not started, but there are enough players, start the game
                             // if (getServer().onlinePlayers.size >= 2)
-                            countDownAndStart(goingToPlay)
+                            if (goingToPlay.isNotEmpty())
+                                countDownAndStart(goingToPlay)
                             // else
                             //     broadcast(Component.text("Недостаточно игроков!", TextColor.color(255, 0, 0)))
                         }
