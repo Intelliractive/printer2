@@ -58,4 +58,5 @@ application {
 tasks.withType<ShadowJar> {
     archiveFileName.set("printer2.jar")
 //    destinationDirectory.set(file("C:\\Users\\Ilyushya\\Desktop\\goodplace2022\\gp-minigames\\printer\\plugins"))
+    // запускать так: gradlew shadowJar -PdestDir= ...
 }
