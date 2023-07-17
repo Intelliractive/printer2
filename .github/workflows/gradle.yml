@@ -33,6 +33,7 @@ jobs:
 #       with:
 #         arguments: shadowJar #build
     - name: Building
-      run:
+      run: |
+        chmod +x ./gradlew
         ./gradlew shadowJar
       
