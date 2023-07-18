@@ -34,8 +34,13 @@ jobs:
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
         arguments: shadowJar
-    - name: Upload build reports
+    - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
         name: build-artifacts
-        path: /app/build/libs/printer2.jar
+        path: app/build/libs/printer2.jar
+    - name: action-upload-release
+      uses: diamondburned/action-upload-release@v0.0.1
+      with:
+        # A list of files to upload. If a directory is specified, all files in the directory will be uploaded.
+        files: app/build/libs/printer2.jar
