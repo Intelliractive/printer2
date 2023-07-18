@@ -39,9 +39,11 @@ jobs:
       with:
         name: build-artifacts
         path: app/build/libs/printer2.jar
-    - name: action-upload-release
-      uses: diamondburned/action-upload-release@v0.0.1
+    - name: Files -> release
+      uses: SierraSoftworks/gh-releases@v1.0.7
       with:
-        # A list of files to upload. If a directory is specified, all files in the directory will be uploaded.
-        files: app/build/libs/printer2.jar
-        release-id: 'v1.0.0'
+        token: ${{ secrets.GITHUB_TOKEN }}
+        overwrite: 'true'
+        files: |
+          app/build/libs/printer2.jar
+          build-artifacts
