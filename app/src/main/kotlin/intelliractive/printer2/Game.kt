@@ -26,6 +26,7 @@ import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Bukkit.*
 import org.bukkit.GameMode
 import org.bukkit.Location
+import org.bukkit.block.Block
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -34,6 +35,8 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.server.ServerLoadEvent
 
 class Game(val plugin: App) : Listener { // plugin не трогать! (нужно для Bukkit заданий)
+    var world = getWorld("world")!!
+
     // Состояние игры
     var isStarted: Boolean = false
 
@@ -65,45 +68,45 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
         player.sendMessage(Component.text("Привет! Игра скоро начнётся!", TextColor.color(10, 20, 255)))
         player.sendMessage(Component.text("Будешь играть?", TextColor.color(100, 20, 255)))
         player.sendMessage(
-            Component.text("[Да]", TextColor.color(0, 200, 0)).clickEvent(ClickEvent.callback {
-                goingToPlay.add(player)
-                player.sendMessage(
-                    Component.text(
-                        "Ты в игре!",
-                        TextColor.color(0, 220, 0)
+                Component.text("[Да]", TextColor.color(0, 200, 0)).clickEvent(ClickEvent.callback {
+                    goingToPlay.add(player)
+                    player.sendMessage(
+                            Component.text(
+                                    "Ты в игре!",
+                                    TextColor.color(0, 220, 0)
+                            )
                     )
-                )
 
-                //// Таймер и отсчёт до игры
-                val preGameTimer = Timer(6)
-                var preGameCDBar: BossBar? = BossBar.bossBar(
-                    Component.text("Ожидание игроков ещё ${preGameTimer.seconds} секунд", TextColor.color(255, 255, 0)),
-                    0.0f,
-                    BossBar.Color.GREEN,
-                    BossBar.Overlay.PROGRESS
-                )
-                preGameCDBar?.addViewer(player)
-                preGameTimer.tick = {
-                    // broadcast(Component.text("Ожидание игроков ещё ${preGameTimer.seconds} секунд", TextColor.color(255, 255, 0)))
-                    preGameCDBar?.progress(preGameTimer.seconds.toFloat() / 6)
-                }
-                preGameTimer.task = {
-                    // if the game is already started, don't count down
-                    if (isStarted) {
-                        broadcast(Component.text("Игра уже запущена!", TextColor.color(255, 0, 0)))
-                    } else {
-                        // if the game is not started, but there are enough players, start the game
-                        // if (getServer().onlinePlayers.size >= 2)
-                        if (goingToPlay.isNotEmpty())
-                            countDownAndStart(goingToPlay)
-                        // else
-                        //     broadcast(Component.text("Недостаточно игроков!", TextColor.color(255, 0, 0)))
+                    //// Таймер и отсчёт до игры
+                    val preGameTimer = Timer(6)
+                    var preGameCDBar: BossBar? = BossBar.bossBar(
+                            Component.text("Ожидание игроков ещё ${preGameTimer.seconds} секунд", TextColor.color(255, 255, 0)),
+                            0.0f,
+                            BossBar.Color.GREEN,
+                            BossBar.Overlay.PROGRESS
+                    )
+                    preGameCDBar?.addViewer(player)
+                    preGameTimer.tick = {
+                        // broadcast(Component.text("Ожидание игроков ещё ${preGameTimer.seconds} секунд", TextColor.color(255, 255, 0)))
+                        preGameCDBar?.progress(preGameTimer.seconds.toFloat() / 6)
                     }
+                    preGameTimer.task = {
+                        // if the game is already started, don't count down
+                        if (isStarted) {
+                            broadcast(Component.text("Игра уже запущена!", TextColor.color(255, 0, 0)))
+                        } else {
+                            // if the game is not started, but there are enough players, start the game
+                            // if (getServer().onlinePlayers.size >= 2)
+                            if (goingToPlay.isNotEmpty())
+                                countDownAndStart(goingToPlay)
+                            // else
+                            //     broadcast(Component.text("Недостаточно игроков!", TextColor.color(255, 0, 0)))
+                        }
 
-                    preGameCDBar?.removeViewer(player)
-                }
-                preGameTimer.start()
-            })
+                        preGameCDBar?.removeViewer(player)
+                    }
+                    preGameTimer.start()
+                })
         )
     }
 
@@ -114,17 +117,17 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
     }
 
     val arcs: List<Location> = listOf(
-        Location(getWorld("world"), -31.0, -60.0, 34.0),
-        Location(getWorld("world"), -31.0, -60.0, 29.0),
-        Location(getWorld("world"), -31.0, -60.0, 24.0),
-        Location(getWorld("world"), -31.0, -60.0, 19.0),
+            Location(getWorld("world"), -31.0, -60.0, 34.0),
+            Location(getWorld("world"), -31.0, -60.0, 29.0),
+            Location(getWorld("world"), -31.0, -60.0, 24.0),
+            Location(getWorld("world"), -31.0, -60.0, 19.0),
 
-        Location(getWorld("world"), -31.0, -60.0, 39.0),
+            Location(getWorld("world"), -31.0, -60.0, 39.0),
 
-        Location(getWorld("world"), -31.0, -60.0, 44.0),
-        Location(getWorld("world"), -31.0, -60.0, 49.0),
-        Location(getWorld("world"), -31.0, -60.0, 54.0),
-        Location(getWorld("world"), -31.0, -60.0, 59.0)
+            Location(getWorld("world"), -31.0, -60.0, 44.0),
+            Location(getWorld("world"), -31.0, -60.0, 49.0),
+            Location(getWorld("world"), -31.0, -60.0, 54.0),
+            Location(getWorld("world"), -31.0, -60.0, 59.0)
     )
 
     // Отсчёт до игры
@@ -152,10 +155,10 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
 
             // Полоса на выбор команд
             var playersChooseTeamTimerBar: BossBar? = BossBar.bossBar(
-                Component.text("Ожидание выбора команды", TextColor.color(252, 186, 3)),
-                0.0F,
-                BossBar.Color.RED,
-                BossBar.Overlay.PROGRESS
+                    Component.text("Ожидание выбора команды", TextColor.color(252, 186, 3)),
+                    0.0F,
+                    BossBar.Color.RED,
+                    BossBar.Overlay.PROGRESS
             )
 
             // Игроки выбирают команду
@@ -164,20 +167,20 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
 
                 player.sendMessage(Component.text("Выбери команду!", TextColor.color(255, 0, 255)))
                 player.sendMessage(
-                    Component.text("[Голубая]", TextColor.color(0, 255, 255)).clickEvent(
-                        ClickEvent.callback {
-                            dispatchCommand(getConsoleSender(), "/execute as ${player.name} run team join lightBlue")
-                            lightBlueTeam.add(player)
-                        }
-                    )
+                        Component.text("[Голубая]", TextColor.color(0, 255, 255)).clickEvent(
+                                ClickEvent.callback {
+                                    dispatchCommand(getConsoleSender(), "/execute as ${player.name} run team join lightBlue")
+                                    lightBlueTeam.add(player)
+                                }
+                        )
                 )
                 player.sendMessage(Component.text(" ---- ", TextColor.color(245, 245, 245)))
                 player.sendMessage(
                         Component.text("[Зелёная]", TextColor.color(0, 255, 0)).clickEvent(
-                            ClickEvent.callback {
-                                dispatchCommand(getConsoleSender(), "/execute as ${player.name} run team join green")
-                                greenTeam.add(player)
-                            }
+                                ClickEvent.callback {
+                                    dispatchCommand(getConsoleSender(), "/execute as ${player.name} run team join green")
+                                    greenTeam.add(player)
+                                }
                         )
                 )
             }
@@ -231,9 +234,20 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
 
         // Select a random picture
 //        val picture = Picture.entries.random()
-//        val hintRow = listOf<Location>(
-//
-//        )
+        val hintRow = listOf<Block>(
+                world.getBlockAt(4, -52, 35),
+
+                world.getBlockAt(4, -52, 36),
+                world.getBlockAt(4, -52, 37),
+                world.getBlockAt(4, -52, 38),
+                world.getBlockAt(4, -52, 39),
+                world.getBlockAt(4, -52, 40),
+                world.getBlockAt(4, -52, 41),
+                world.getBlockAt(4, -52, 42),
+                world.getBlockAt(4, -52, 43),
+                world.getBlockAt(4, -52, 44),
+
+        )
 
 //        for (row in picture.grid.reversed()) {
 //
