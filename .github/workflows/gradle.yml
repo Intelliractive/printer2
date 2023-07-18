@@ -47,4 +47,4 @@ jobs:
         files: |
           app/build/libs/printer2.jar
           build-artifacts
-        release-tag: v1.0.0
+        release_tag: v1.0.0
