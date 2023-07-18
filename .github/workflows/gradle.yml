@@ -14,7 +14,7 @@ on:
     branches: [ "master" ]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -28,12 +28,22 @@ jobs:
       with:
         java-version: '19'
         distribution: 'temurin'
-#     - name: Build with Gradle
-#       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
-#       with:
-#         arguments: shadowJar #build
-    - name: Building
-      run: |
-        chmod +x ./gradlew
-        ./gradlew shadowJar
-      
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew
+    - name: Build with Gradle
+      uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
+      with:
+        arguments: shadowJar
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: app/build/libs/printer2.jar
+    - name: Files -> release
+      uses: SierraSoftworks/gh-releases@v1.0.7
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        overwrite: 'true'
+        files: |
+          app/build/libs/printer2.jar
+        release_tag: newest
