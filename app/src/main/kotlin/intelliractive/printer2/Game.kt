@@ -31,6 +31,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.server.ServerLoadEvent
 
 class Game(val plugin: App) : Listener { // plugin не трогать! (нужно для Bukkit заданий)
     // Состояние игры
@@ -51,11 +52,14 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
         dispatchCommand(getConsoleSender(), "team modify lightBlue nameTagVisibility never")
     }
 
+    @EventHandler
+    fun onServerLoad(event: ServerLoadEvent) {
+        createTeams()
+    }
+
     // Событие - игрок присоединился
     @EventHandler
     fun onPlayerJoin(event: PlayerJoinEvent) {
-        createTeams()
-
         val player = event.player
         // greet the player
         player.sendMessage(Component.text("Привет! Игра скоро начнётся!", TextColor.color(10, 20, 255)))
