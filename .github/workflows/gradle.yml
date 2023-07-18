@@ -44,3 +44,4 @@ jobs:
       with:
         # A list of files to upload. If a directory is specified, all files in the directory will be uploaded.
         files: app/build/libs/printer2.jar
+        $RELEASE_ID: 1
