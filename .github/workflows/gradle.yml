@@ -46,5 +46,4 @@ jobs:
         overwrite: 'true'
         files: |
           app/build/libs/printer2.jar
-          build-artifacts
-        release_tag: v1.0.0
+        release_tag: newest
