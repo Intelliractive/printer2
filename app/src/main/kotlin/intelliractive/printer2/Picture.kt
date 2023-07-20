@@ -91,37 +91,58 @@ enum class Picture(
     val rusName: String,
     val grid: List<List<Material>>,
     /**Блоки, которые надо "распечатать" по кол-ву игроков.*/
-    val blocksToPlace: Map<Int, List<List<Byte>>> = mapOf(
+    val blocksToPlace: Map<Int, List<List<Set<Byte>>>> = mapOf(
         2 to listOf(
-            listOf(0, 4),
-            listOf(8, 9),
-            listOf(1, 2),
+            listOf(
+                setOf(0, 4),
+                setOf(8, 9),
+                setOf(1, 2),
 
-            listOf(3, 7),
-            listOf(9, 3),
-            listOf(4, 5),
+                setOf(3, 7),
+                setOf(9, 3),
+                setOf(4, 5),
 
-            listOf(6, 5),
-            listOf(4, 0),
-            listOf(7, 1),
+                setOf(6, 5),
+                setOf(4, 0),
+                setOf(7, 1),
 
-            listOf(0, 9),
+                setOf(0, 9),
+            ),
         ),
         3 to listOf(
-            listOf(0, 4, 9),
-            listOf(8, 9, 7),
-            listOf(1, 2, 4),
+            listOf(
+                setOf(0, 4, 9),
+                setOf(8, 9, 7),
+                setOf(1, 2, 4),
 
-            listOf(3, 7, 5),
-            listOf(9, 3, 0),
-            listOf(4, 5, 8),
+                setOf(3, 7, 5),
+                setOf(9, 3, 0),
+                setOf(4, 5, 8),
 
-            listOf(6, 5, 3),
-            listOf(4, 0, 1),
-            listOf(7, 1, 2),
+                setOf(6, 5, 3),
+                setOf(4, 0, 1),
+                setOf(7, 1, 2),
 
-            listOf(0, 9, 4),
-        )
+                setOf(0, 9, 4),
+            ),
+        ),
+        4 to listOf(
+            listOf(
+                setOf(0, 4, 9, 7),
+                setOf(8, 9, 7, 5),
+                setOf(1, 2, 4, 3),
+
+                setOf(3, 7, 5, 1),
+                setOf(9, 3, 0),
+                setOf(4, 5, 8),
+
+                setOf(6, 5, 3),
+                setOf(4, 0, 1),
+                setOf(7, 1, 2),
+
+                setOf(0, 9, 4),
+            ),
+        ),
     ),
 ) {
     `250ThndTonsOfTNT`(
