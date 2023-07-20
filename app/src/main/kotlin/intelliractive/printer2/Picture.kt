@@ -86,11 +86,14 @@ import org.bukkit.Material.LIGHT_GRAY_STAINED_GLASS as lgrayglass
 
 /** ## Картинки
  * Здесь содердатся все картинки в форме списка со списками, явл. горизонтальными рядами, из кот. состоит картинка. Их 10 (размер картинки: 10*10).
- * @since the beginning */
+ * @author Intelliractive
+ * @since the beginning
+ * @param rusName Имя на русском
+ * @param grid Картинка в виде рядов из блоков
+ * @param blocksToPlace Блоки, которые надо "распечатать" по кол-ву игроков*/
 enum class Picture(
     val rusName: String,
     val grid: List<List<Material>>,
-    /**Блоки, которые надо "распечатать" по кол-ву игроков.*/
     val blocksToPlace: Map<Int, List<List<Set<Byte>>>> = mapOf(
         2 to listOf(
             listOf(
