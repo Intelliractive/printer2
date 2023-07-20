@@ -133,14 +133,14 @@ enum class Picture(
                 setOf(1, 2, 4, 3),
 
                 setOf(3, 7, 5, 1),
-                setOf(9, 3, 0),
-                setOf(4, 5, 8),
+                setOf(9, 3, 0, 2),
+                setOf(4, 5, 8, 1),
 
-                setOf(6, 5, 3),
-                setOf(4, 0, 1),
-                setOf(7, 1, 2),
+                setOf(6, 5, 3, 9),
+                setOf(4, 0, 1, 8),
+                setOf(7, 1, 2, 8),
 
-                setOf(0, 9, 4),
+                setOf(0, 9, 4, 3),
             ),
         ),
     ),
