@@ -106,6 +106,21 @@ enum class Picture(
             listOf(7, 1),
 
             listOf(0, 9),
+        ),
+        3 to listOf(
+            listOf(0, 4, 9),
+            listOf(8, 9, 7),
+            listOf(1, 2, 4),
+
+            listOf(3, 7, 5),
+            listOf(9, 3, 0),
+            listOf(4, 5, 8),
+
+            listOf(6, 5, 3),
+            listOf(4, 0, 1),
+            listOf(7, 1, 2),
+
+            listOf(0, 9, 4),
         )
     ),
 ) {
