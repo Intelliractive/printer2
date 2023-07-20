@@ -236,7 +236,6 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
 //        val picture = Picture.entries.random()
         val hintRow = listOf<Block>(
                 world.getBlockAt(4, -52, 35),
-
                 world.getBlockAt(4, -52, 36),
                 world.getBlockAt(4, -52, 37),
                 world.getBlockAt(4, -52, 38),
