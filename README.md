@@ -2,7 +2,7 @@
 # printer2
 
 Мини-игра для сервера Илющи (GoodPlaceMC)
-[↓скачать↓](https://github.com/Intelliractive/printer2/releases/download/newest/printer2.jar)
+[↓скачать последнюю автоматическую сборку↓](https://github.com/Intelliractive/printer2/releases/download/newest/printer2.jar)
 ---
 
 Это - новая мини-игра! Игра проходит так: игроки заходят, при достаточном кол-ве игроков игра начинается.
