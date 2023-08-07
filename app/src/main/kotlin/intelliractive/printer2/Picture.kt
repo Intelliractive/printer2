@@ -1,4 +1,6 @@
-@file:Suppress("KDocMissingDocumentation", "unused", "UnusedImport", "SpellCheckingInspection")
+@file:Suppress("KDocMissingDocumentation", "unused", "UnusedImport", "SpellCheckingInspection",
+    "MemberVisibilityCanBePrivate"
+)
 
 package intelliractive.printer2
 
@@ -90,10 +92,12 @@ import org.bukkit.Material.LIGHT_GRAY_STAINED_GLASS as lgrayglass
  * @since the beginning
  * @param rusName Имя на русском
  * @param grid Картинка в виде рядов из блоков
+ * @param rusNameSubt Вторая строчка в объявлении картинки
  * @param blocksToPlace Блоки, которые надо "распечатать" по кол-ву игроков*/
 enum class Picture(
     val rusName: String,
     val grid: List<List<Material>>,
+    val rusNameSubt: String? = null,
     val blocksToPlace: Map<Int, List<List<Set<Byte>>>> = mapOf(
         1 to listOf(
             listOf(
@@ -167,7 +171,7 @@ enum class Picture(
     ),
 ) {
     HenInAHenHouse(
-        "Курица в курятнике", listOf(
+        "Курица в курятнике",  listOf(
             listOf(stroak, lbc, lbcp, stroak, wt, wt, wt, wt, wt, wt),
             listOf(stroak, lbcp, lbc, stroak, wt, wt, rw, rw, wt, wt),
             listOf(wt, stroak, stroak, wt, wt, wt, ww, ww, ww, wt),
@@ -178,7 +182,7 @@ enum class Picture(
             listOf(brw, brw, ww, ww, ww, ww, ww, ww, brw, brw),
             listOf(brw, brw, brw, brw, brw, brw, brw, brw, brw, brw),
             listOf(brw, brw, brw, brw, brw, brw, brw, brw, brw, brw)
-        )
+        ), "Курочка в гнезде"
     ),
     PenguinInACoat(
         "Пингвин в пальто", listOf(
@@ -192,7 +196,7 @@ enum class Picture(
             listOf(brw, ww, ww, ww, yc, yc, ww, ww, ww, brw),
             listOf(brw, brw, ww, ww, ww, ww, ww, ww, brw, brw),
             listOf(brw, brw, brw, brw, brw, brw, brw, brw, brw, brw),
-        )
+        ), "Не конь"
     ),
     `250ThndTonsOfTNT`(
         "250 тысяч тонн тротила", listOf(
@@ -207,7 +211,7 @@ enum class Picture(
             listOf(lbc, lgc, lgc, lgc, lbc, lbc, lbc, wt, lbc, wt),
             listOf(lbc, lgc, lgc, lgc, lbc, lbc, lbc, grt, lbc, blc),
             listOf(lw, lw, lw, lw, lw, lw, lw, lw, lw, lw),
-        )
+        ), "ААААААА"
     ),
     Cup(
         "Чашка", listOf(
@@ -224,7 +228,7 @@ enum class Picture(
             listOf(ww, lbt, lbt, lbt, lbt, lbt, lbt, lbt, lbt, ww),
             listOf(blw, blw, lbt, lbt, lbt, lbt, lbt, ww, blw, blw),
             listOf(lbt, blw, blw, blw, blw, blw, blw, blw, ww, lbt)
-        )
+        ), "Джавы??"
     ),
     VillageHouse(
         "Деревенский домик", listOf(
@@ -250,7 +254,7 @@ enum class Picture(
                 stroak
             ),
             listOf(DIRT, DIRT, grass, grass, grass, DIRT, DIRT, DIRT, DIRT, DIRT)
-        )
+        ), "Это не отсылка на молоко"
     ),
 
     /** ### Была построена первой! */
@@ -269,7 +273,7 @@ enum class Picture(
             listOf(lc, lw, birch, birch, pw, lbc, birch, birch, lw, lc),
 
             listOf(lc, lc, bw, bw, lbc, lw, bw, bw, lc, lc),
-        )
+        ), "Красиво я сделал?"
     ),
     Beach(
         "Пляж", listOf(
@@ -297,7 +301,7 @@ enum class Picture(
             listOf(lbc, rcp, rcp, wcp, lbc, lw, lbc, lbc, lcp, lcp),
             listOf(ocp, rcp, lbc, lbc, lbc, lbc, lw, lw, lcp, lcp),
             listOf(rcp, ocp, rcp, rcp, lbc, lbc, lbc, lw, lbc, lcp)
-        )
+        ), "А вот эта - уже отсылка!"
     ),
     WinterNight(
         "Ночь зимой", listOf(
@@ -325,7 +329,7 @@ enum class Picture(
             listOf(lw, grc, gcp, ww, gcp, grc, gcp, ocp, ocp, gcp),
             listOf(yc, yc, yc, yc, yc, yc, ocp, yc, yc, yc),
             listOf(yc, yc, yc, yc, yc, yc, yc, yc, yc, yc),
-        )
+        ), "М-м, чизбургер"
     ),
     Roblox(
         "Роблокс", listOf(
@@ -339,7 +343,7 @@ enum class Picture(
             listOf(gc, gc, wc, wc, wc, wc, wc, wc, gc, gc),
             listOf(gc, gc, gc, gc, wc, wc, wc, wc, gc, gc),
             listOf(gc, gc, gc, gc, gc, gc, wc, gc, gc, gc),
-        )
+        ), "УФ!"
     ),
     LegoFace(
         "Лего-лицо", listOf(
@@ -356,7 +360,7 @@ enum class Picture(
             listOf(ycp, blackcp, ycp, ycp, ycp, ycp, ycp, ycp, blackcp, ycp),
             listOf(ycp, ycp, blackcp, blackcp, blackcp, blackcp, blackcp, blackcp, ycp, ycp),
             listOf(ycp, ycp, ycp, ycp, ycp, ycp, ycp, ycp, ycp, ycp)
-        )
+        ), "*звуки лего*"
     ),
     RobloxConfidentFace(
         "Роблокс - 'Уверенное лицо'", listOf(
@@ -395,7 +399,7 @@ enum class Picture(
             listOf(brw, brw, brw, COAL_BLOCK, rw, rw, COAL_BLOCK, brw, brw, brw),
 
             listOf(brw, brw, brw, brw, brw, brw, brw, brw, brw, brw),
-        )
+        ), "вяжет"
     ),
     AmongUsRed(
         "'Among Us' - Красный", listOf(
@@ -410,5 +414,5 @@ enum class Picture(
             listOf(rw, rw, rw, rw, rw, rw, rw, rw, bt, bt),
             listOf(rw, rw, rw, rw, rw, rw, rw, rw, bt, bt)
         )
-    );
+    )
 }

@@ -233,7 +233,20 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
         The game is over when all the rows are printed. */
 
         // Select a random picture
-//        val picture = Picture.entries.random()
+        val picture = Picture.entries.random()
+
+        // представление игры
+        dispatchCommand(getConsoleSender(), "title @a times 20 20 20")
+        dispatchCommand(getConsoleSender(), "title @a title [\"\",{\"text\":\"\\u041c\\u0438\\u043d\\u0438-\\u0438\\u0433\\u0440\\u0430 \\\"\",\"color\":\"dark_green\"},{\"text\":\"\\u041f\\u0440\\u0438\\u043d\\u0442\\u0435\\u0440\"},{\"text\":\"\\\"\",\"color\":\"dark_green\"}]")
+        // краткая инструкция
+        dispatchCommand(getConsoleSender(), "title @a actionbar {\"text\":\"\\u0421\\u0442\\u0430\\u043d\\u043e\\u0432\\u0438\\u0442\\u0435\\u0441\\u044c \\u043a\\u0443\\u0434\\u0430 \\u043d\\u0430\\u0434\\u043e, \\u0434\\u0435\\u0440\\u0436\\u0430 \\u0432 \\u0440\\u0443\\u043a\\u0435 \\u043f\\u0440\\u0430\\u0432. \\u0431\\u043b\\u043e\\u043a!\",\"underlined\":true,\"color\":\"gold\"}")
+        // "Ваша картинка - ..."
+        dispatchCommand(getConsoleSender(), "title @a actionbar [\"\",{\"text\":\"\\u2191\",\"color\":\"#3CFF0A\"},{\"text\":\" \\u0412\\u0430\\u0448\\u0430 \\u043a\\u0430\\u0440\\u0442\\u0438\\u043d\\u043a\\u0430 -\",\"italic\":true,\"color\":\"yellow\"},{\"text\":\" ...\",\"color\":\"light_purple\"},{\"text\":\" \\u2191\",\"color\":\"#09FF00\"}]")
+        // изображение
+        dispatchCommand(getConsoleSender(), "title @a times 10 20 10")
+        dispatchCommand(getConsoleSender(), "title @a title ${picture.rusName}")
+        if (picture.rusNameSubt.isNullOrEmpty().not()) dispatchCommand(getConsoleSender(), "title @a subtitle ${picture.rusNameSubt}")
+
         val hintRow = listOf<Block>(
                 world.getBlockAt(4, -52, 35),
                 world.getBlockAt(4, -52, 36),
