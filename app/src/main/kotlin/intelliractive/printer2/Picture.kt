@@ -95,6 +95,23 @@ enum class Picture(
     val rusName: String,
     val grid: List<List<Material>>,
     val blocksToPlace: Map<Int, List<List<Set<Byte>>>> = mapOf(
+        1 to listOf(
+            listOf(
+                setOf(0),
+                setOf(8),
+                setOf(1),
+
+                setOf(3),
+                setOf(9),
+                setOf(4),
+
+                setOf(6),
+                setOf(4),
+                setOf(7),
+
+                setOf(0),
+            )
+        ),
         2 to listOf(
             // каждый список - это вариант.
             listOf(
