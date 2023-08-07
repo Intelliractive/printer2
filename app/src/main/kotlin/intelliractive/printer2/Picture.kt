@@ -149,6 +149,20 @@ enum class Picture(
         ),
     ),
 ) {
+    HenInAHenHouse(
+        "Курица в курятнике", listOf(
+            listOf(stroak, lbc, lbcp, stroak, wt, wt, wt, wt, wt, wt),
+            listOf(stroak, lbcp, lbc, stroak, wt, wt, rw, rw, wt, wt),
+            listOf(wt, stroak, stroak, wt, wt, wt, ww, ww, ww, wt),
+            listOf(wt, wt, wt, wt, wt, wt, ww, bw, ww, wt),
+            listOf(wt, ww, ww, ww, ww, ww, ww, ww, yc, wt),
+            listOf(ww, ww, ww, ww, ww, ww, ww, ww, ww, wt),
+            listOf(brw, ww, ww, ww, ww, ww, ww, ww, ww, brw),
+            listOf(brw, brw, ww, ww, ww, ww, ww, ww, brw, brw),
+            listOf(brw, brw, brw, brw, brw, brw, brw, brw, brw, brw),
+            listOf(brw, brw, brw, brw, brw, brw, brw, brw, brw, brw)
+        )
+    ),
     PenguinInACoat(
         "Пингвин в пальто", listOf(
             listOf(ww, ww, grayw, grayw, grayw, grayw, grayw, grayw, ww, ww),
@@ -206,7 +220,18 @@ enum class Picture(
             listOf(lbw, lbw, lbw, lbw, lbw, stroak, wt, wt, wt, stroak),
             listOf(OAK_LEAVES, OAK_LEAVES, lbw, lbw, lbw, stroak, wt, GLASS, wt, stroak),
             listOf(oaklog, OAK_LEAVES, lbw, lbw, lbw, stroak, wt, GLASS, wt, stroak),
-            listOf(oaklog, lbw, OAK_FENCE, OAK_FENCE, OAK_FENCE, stroak, MOSSY_COBBLESTONE, COBBLESTONE, COBBLESTONE, stroak),
+            listOf(
+                oaklog,
+                lbw,
+                OAK_FENCE,
+                OAK_FENCE,
+                OAK_FENCE,
+                stroak,
+                MOSSY_COBBLESTONE,
+                COBBLESTONE,
+                COBBLESTONE,
+                stroak
+            ),
             listOf(DIRT, DIRT, grass, grass, grass, DIRT, DIRT, DIRT, DIRT, DIRT)
         )
     ),
