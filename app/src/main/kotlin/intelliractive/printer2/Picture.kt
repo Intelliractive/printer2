@@ -96,6 +96,7 @@ enum class Picture(
     val grid: List<List<Material>>,
     val blocksToPlace: Map<Int, List<List<Set<Byte>>>> = mapOf(
         2 to listOf(
+            // каждый список - это вариант.
             listOf(
                 setOf(0, 4),
                 setOf(8, 9),
@@ -148,6 +149,20 @@ enum class Picture(
         ),
     ),
 ) {
+    PenguinInACoat(
+        "Пингвин в пальто", listOf(
+            listOf(ww, ww, grayw, grayw, grayw, grayw, grayw, grayw, ww, ww),
+            listOf(grayw, grayw, ww, ww, ww, ww, ww, ww, grayw, grayw),
+            listOf(ww, ww, ww, ww, ww, ww, ww, ww, ww, ww),
+            listOf(ww, bw, bw, ww, ww, ww, ww, bw, bw, ww),
+            listOf(ww, bw, bw, ww, ww, ww, ww, bw, bw, ww),
+            listOf(ww, ww, ww, ww, ww, ww, ww, ww, ww, ww),
+            listOf(ww, ww, ww, yc, yc, yc, yc, ww, ww, ww),
+            listOf(brw, ww, ww, ww, yc, yc, ww, ww, ww, brw),
+            listOf(brw, brw, ww, ww, ww, ww, ww, ww, brw, brw),
+            listOf(brw, brw, brw, brw, brw, brw, brw, brw, brw, brw),
+        )
+    ),
     `250ThndTonsOfTNT`(
         "250 тысяч тонн тротила", listOf(
             listOf(wc, lbc, lbc, lbc, ww, ww, lbc, lbc, lbc, lbc),
@@ -161,22 +176,7 @@ enum class Picture(
             listOf(lbc, lgc, lgc, lgc, lbc, lbc, lbc, wt, lbc, wt),
             listOf(lbc, lgc, lgc, lgc, lbc, lbc, lbc, grt, lbc, blc),
             listOf(lw, lw, lw, lw, lw, lw, lw, lw, lw, lw),
-        )/*, mapOf(0 to listOf(
-            byteArrayOf(0, 1, 2),
-            byteArrayOf(0, 1, 2),
-            byteArrayOf(0, 1, 2),
-
-            byteArrayOf(0, 1, 2),
-            byteArrayOf(0, 1, 2),
-            byteArrayOf(0, 1, 2),
-
-            byteArrayOf(0, 1, 2),
-            byteArrayOf(0, 1, 2),
-            byteArrayOf(0, 1, 2),
-
-            byteArrayOf(0, 1, 2),
         )
-    )*/
     ),
     Cup(
         "Чашка", listOf(
@@ -206,18 +206,7 @@ enum class Picture(
             listOf(lbw, lbw, lbw, lbw, lbw, stroak, wt, wt, wt, stroak),
             listOf(OAK_LEAVES, OAK_LEAVES, lbw, lbw, lbw, stroak, wt, GLASS, wt, stroak),
             listOf(oaklog, OAK_LEAVES, lbw, lbw, lbw, stroak, wt, GLASS, wt, stroak),
-            listOf(
-                oaklog,
-                lbw,
-                OAK_FENCE,
-                OAK_FENCE,
-                OAK_FENCE,
-                stroak,
-                MOSSY_COBBLESTONE,
-                COBBLESTONE,
-                COBBLESTONE,
-                stroak
-            ),
+            listOf(oaklog, lbw, OAK_FENCE, OAK_FENCE, OAK_FENCE, stroak, MOSSY_COBBLESTONE, COBBLESTONE, COBBLESTONE, stroak),
             listOf(DIRT, DIRT, grass, grass, grass, DIRT, DIRT, DIRT, DIRT, DIRT)
         )
     ),
