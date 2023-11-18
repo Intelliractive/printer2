@@ -5,8 +5,6 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Bukkit
 import org.bukkit.Bukkit.getOnlinePlayers
-import org.bukkit.Location
-import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 /** #### Отсчёт до игры*/
 class Countdown(override var seconds: Int): Timer(seconds){
@@ -15,13 +13,13 @@ class Countdown(override var seconds: Int): Timer(seconds){
         object : BukkitRunnable() {
             override fun run() {
                 if (seconds <= 0) {
-                    task()
+                    onTimeIsUp()
                     // Timer has finished
                     state = "off"
                     cancel()
                 } else {
                     getOnlinePlayers().forEach { player ->
-                        player.sendMessage(Component.text("Игра начнётся через $seconds секунд", TextColor.color(155, 255, 255)))
+                        player.sendMessage(Component.text("Игра начнётся через ${seconds}с", TextColor.color(155, 255, 255)))
                     }
 
                     // Decrement the timer

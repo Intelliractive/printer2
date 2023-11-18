@@ -12,7 +12,6 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     application
     java
-    groovy
     kotlin("jvm") version "1.9.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
@@ -31,18 +30,14 @@ dependencies {
     implementation("com.google.guava:guava:31.1-jre")
 
     compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
-    // Kotlin coroutines
-//    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2")
-
-    implementation("org.apache.groovy:groovy-all:4.0.13")
-//    implementation("org.codehaus.gpars:gpars:1.2.0")
+//    implementation("org.apache.groovy:groovy-all:4.0.13")
+// import scala 3
+//    implementation("org.scala-lang:scala3-library_3:3.3.0")
 }
 
 application {
     // Define the main class for the application.
     mainClass.set("intelliractive.printer2.App")
-    // change jar name
-    // application.applicationName = "Printer2"
 }
 
 //tasks.named<Test>("test") {
@@ -51,7 +46,7 @@ application {
 //}
 
 //java {
-//    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+//    toolchain.languageVersion.set(JavaLanguageVersion.of(19))
 //}
 
 // set jar manifest

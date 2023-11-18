@@ -18,8 +18,8 @@
 
 package intelliractive.printer2
 
-//import kotlinx.coroutines.*
 import net.kyori.adventure.bossbar.BossBar
+import net.kyori.adventure.bossbar.BossBar.Overlay
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.TextColor
@@ -38,10 +38,28 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
     var world = getWorld("world")!!
 
     // Состояние игры
-    var isStarted: Boolean = false
+    var isGameStarted = false
+    var isWaitingForPlayers = false
 
     // a list of players that are going to play
-    var goingToPlay: MutableList<Player> = mutableListOf()
+    var goingToPlay = mutableListOf<Player>()
+
+    // Список игроков по командам
+    var lightBlueTeam = mutableListOf<Player>()
+    var greenTeam = mutableListOf<Player>()
+
+    // Полоса на выбор команд
+    var teamChoiceTimerBar: BossBar? = BossBar.bossBar(
+        Component.text("Ожидание выбора команды", TextColor.color(252, 186, 3)),
+        0.0F,
+        BossBar.Color.RED,
+        Overlay.PROGRESS
+    )
+
+    // Выбор команды
+    var teamChoiceTimer: Timer = Timer(15).apply {
+        onTick = { teamChoiceTimerBar?.progress(seconds.toFloat() / 10) }
+    }
 
     fun createTeams() {
         dispatchCommand(getConsoleSender(), "team add green")
@@ -68,159 +86,121 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
         player.sendMessage(Component.text("Привет! Игра скоро начнётся!", TextColor.color(10, 20, 255)))
         player.sendMessage(Component.text("Будешь играть?", TextColor.color(100, 20, 255)))
         player.sendMessage(
-                Component.text("[Да]", TextColor.color(0, 200, 0)).clickEvent(ClickEvent.callback {
-                    goingToPlay.add(player)
-                    player.sendMessage(
-                            Component.text(
-                                    "Ты в игре!",
-                                    TextColor.color(0, 220, 0)
-                            )
+            Component.text("[Да]", TextColor.color(0, 200, 0)).clickEvent(ClickEvent.callback {
+                goingToPlay.add(player)
+                player.sendMessage(
+                    Component.text(
+                        "Ты в игре!",
+                        TextColor.color(0, 220, 0)
                     )
-
-                    //// Таймер и отсчёт до игры
-                    val preGameTimer = Timer(6)
-                    var preGameCDBar: BossBar? = BossBar.bossBar(
-                            Component.text("Ожидание игроков ещё ${preGameTimer.seconds} секунд", TextColor.color(255, 255, 0)),
-                            0.0f,
-                            BossBar.Color.GREEN,
-                            BossBar.Overlay.PROGRESS
-                    )
-                    preGameCDBar?.addViewer(player)
-                    preGameTimer.tick = {
-                        // broadcast(Component.text("Ожидание игроков ещё ${preGameTimer.seconds} секунд", TextColor.color(255, 255, 0)))
-                        preGameCDBar?.progress(preGameTimer.seconds.toFloat() / 6)
-                    }
-                    preGameTimer.task = {
-                        // if the game is already started, don't count down
-                        if (isStarted) {
-                            broadcast(Component.text("Игра уже запущена!", TextColor.color(255, 0, 0)))
-                        } else {
-                            // if the game is not started, but there are enough players, start the game
-                            // if (getServer().onlinePlayers.size >= 2)
-                            if (goingToPlay.isNotEmpty())
-                                countDownAndStart(goingToPlay)
-                            // else
-                            //     broadcast(Component.text("Недостаточно игроков!", TextColor.color(255, 0, 0)))
-                        }
-
-                        preGameCDBar?.removeViewer(player)
-                    }
-                    preGameTimer.start()
-                })
+                )
+            })
         )
+
+        if (!isGameStarted || goingToPlay.size <= 10)
+            waitForPlayers()
+
+        if (!isGameStarted && isWaitingForPlayers) {
+            // Игрок выбирает команду
+            teamChoiceTimerBar?.addViewer(player)
+
+            player.sendMessage(Component.text("Выбери команду!", TextColor.color(255, 0, 255)))
+            player.sendMessage(
+                Component.text("[Голубая]", TextColor.color(0, 255, 255)).clickEvent(
+                    ClickEvent.callback {
+                        dispatchCommand(getConsoleSender(), "/execute as ${player.name} run team join lightBlue")
+                        lightBlueTeam.add(player)
+                    }
+                )
+            )
+            player.sendMessage(Component.text(" ---- ", TextColor.color(245, 245, 245)))
+            player.sendMessage(
+                Component.text("[Зелёная]", TextColor.color(0, 255, 0)).clickEvent(
+                    ClickEvent.callback {
+                        dispatchCommand(getConsoleSender(), "/execute as ${player.name} run team join green")
+                        greenTeam.add(player)
+                    }
+                )
+            )
+        }
     }
 
     @EventHandler
     fun onPlayerQuit(event: PlayerQuitEvent) {
         if (event.player in goingToPlay)
             goingToPlay.remove(event.player)
+//        if (!isGameStarted &&)
     }
 
     val arcs: List<Location> = listOf(
-            Location(getWorld("world"), -31.0, -60.0, 34.0),
-            Location(getWorld("world"), -31.0, -60.0, 29.0),
-            Location(getWorld("world"), -31.0, -60.0, 24.0),
-            Location(getWorld("world"), -31.0, -60.0, 19.0),
+        Location(getWorld("world"), -31.0, -60.0, 34.0),
+        Location(getWorld("world"), -31.0, -60.0, 29.0),
+        Location(getWorld("world"), -31.0, -60.0, 24.0),
+        Location(getWorld("world"), -31.0, -60.0, 19.0),
 
-            Location(getWorld("world"), -31.0, -60.0, 39.0),
+        Location(getWorld("world"), -31.0, -60.0, 39.0),
 
-            Location(getWorld("world"), -31.0, -60.0, 44.0),
-            Location(getWorld("world"), -31.0, -60.0, 49.0),
-            Location(getWorld("world"), -31.0, -60.0, 54.0),
-            Location(getWorld("world"), -31.0, -60.0, 59.0)
+        Location(getWorld("world"), -31.0, -60.0, 44.0),
+        Location(getWorld("world"), -31.0, -60.0, 49.0),
+        Location(getWorld("world"), -31.0, -60.0, 54.0),
+        Location(getWorld("world"), -31.0, -60.0, 59.0)
     )
 
     // Отсчёт до игры
-    fun countDownAndStart(goingToPlay: MutableList<Player>) {
-        broadcast(Component.text("Скоро начнём", TextColor.color(90, 80, 100)))
-        Timer(1, task = {
-            goingToPlay.forEach { player ->
-                player.teleport(Locations.WaitingPlate.loc)
-                player.gameMode = GameMode.ADVENTURE
-            }
-        }).start()
+    fun waitForPlayers() {
+//        broadcast(Component.text("Скоро начнём", TextColor.color(0, 150, 250)))
+        isWaitingForPlayers = true
 
-        val countdown = Countdown(10)
-        countdown.task = {
-            broadcast(Component.text("ИГРА СТАРТУЕТ!", TextColor.color(0, 200, 0)))
+        var waitingForPlayersBar: BossBar? = BossBar.bossBar(Component.text("Ожидание игроков", TextColor.color(0, 200, 250)), 0.0F, BossBar.Color.BLUE, Overlay.NOTCHED_6)
 
-            // Игроки телепортируются под арку (случайную)
-            goingToPlay.forEach {
-                it.teleport(arcs.random())
-            }
+        goingToPlay.forEach { player ->
+            player.teleport(Locations.WaitingPlate.loc)
+            player.gameMode = GameMode.ADVENTURE
 
-            // Список игроков по командам
-            var lightBlueTeam = mutableListOf<Player>()
-            var greenTeam = mutableListOf<Player>()
+            waitingForPlayersBar?.addViewer(player)
+        }
 
-            // Полоса на выбор команд
-            var playersChooseTeamTimerBar: BossBar? = BossBar.bossBar(
-                    Component.text("Ожидание выбора команды", TextColor.color(252, 186, 3)),
-                    0.0F,
-                    BossBar.Color.RED,
-                    BossBar.Overlay.PROGRESS
-            )
+        val countdown = Timer(100)
+        countdown.onTick = {
+            waitingForPlayersBar?.progress(countdown.seconds / 100.0F)
+        }
+        countdown.onTimeIsUp = {
+            teamChoiceTimer.onTick = {
+                isWaitingForPlayers = false
+                goingToPlay.forEach { waitingForPlayersBar?.removeViewer(it) }
 
-            // Игроки выбирают команду
-            goingToPlay.forEach { player ->
-                playersChooseTeamTimerBar?.addViewer(player)
+                broadcast(Component.text("ИГРА СТАРТУЕТ!", TextColor.color(0, 200, 0)))
 
-                player.sendMessage(Component.text("Выбери команду!", TextColor.color(255, 0, 255)))
-                player.sendMessage(
-                        Component.text("[Голубая]", TextColor.color(0, 255, 255)).clickEvent(
-                                ClickEvent.callback {
-                                    dispatchCommand(getConsoleSender(), "/execute as ${player.name} run team join lightBlue")
-                                    lightBlueTeam.add(player)
-                                }
-                        )
-                )
-                player.sendMessage(Component.text(" ---- ", TextColor.color(245, 245, 245)))
-                player.sendMessage(
-                        Component.text("[Зелёная]", TextColor.color(0, 255, 0)).clickEvent(
-                                ClickEvent.callback {
-                                    dispatchCommand(getConsoleSender(), "/execute as ${player.name} run team join green")
-                                    greenTeam.add(player)
-                                }
-                        )
-                )
-            }
-
-            val playersChooseTeamTimer = Timer(15, task = {
+                // Игроки телепортируются под арку (случайную)
+                goingToPlay.forEach {
+                    it.teleport(arcs.random())
+                }
 
                 // Игроки телепортируются на игровое поле.
-
                 lightBlueTeam.forEach { player ->
                     player.teleport(Locations.Light_Blue_Game_Area.loc)
                 }
-
                 greenTeam.forEach { player ->
                     player.teleport(Locations.Green_Game_Area.loc)
                 }
 
-
                 // Убирается полоса
                 goingToPlay.forEach {
-                    playersChooseTeamTimerBar?.removeViewer(it)
+                    teamChoiceTimerBar?.removeViewer(it)
                 }
 
                 if (goingToPlay.isNotEmpty()) {
                     // set the game to started
-                    isStarted = true
-                    beginGame(goingToPlay)
+                    isGameStarted = true
+                    beginGame()
                 }
-            })
-            playersChooseTeamTimer.tick = {
-                playersChooseTeamTimerBar?.progress(playersChooseTeamTimer.seconds.toFloat() / 10)
             }
-            playersChooseTeamTimer.start()
-
         }
         countdown.start()
-
     }
 
     // Алгоритм игры
-    fun beginGame(goingToPlay: MutableList<Player>) {
+    fun beginGame() {
         broadcast(Component.text("Старт!", TextColor.color(0, 200, 0)))
         broadcast(Component.text("Играют: ${goingToPlay.joinToString(", ")}", TextColor.color(200, 200, 0)))
 
@@ -237,28 +217,67 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
 
         // представление игры
         dispatchCommand(getConsoleSender(), "title @a times 20 20 20")
-        dispatchCommand(getConsoleSender(), "title @a title [\"\",{\"text\":\"\\u041c\\u0438\\u043d\\u0438-\\u0438\\u0433\\u0440\\u0430 \\\"\",\"color\":\"dark_green\"},{\"text\":\"\\u041f\\u0440\\u0438\\u043d\\u0442\\u0435\\u0440\"},{\"text\":\"\\\"\",\"color\":\"dark_green\"}]")
+        dispatchCommand(
+            getConsoleSender(),
+            "title @a title [\"\",{\"text\":\"\\u041c\\u0438\\u043d\\u0438-\\u0438\\u0433\\u0440\\u0430 \\\"\",\"color\":\"dark_green\"},{\"text\":\"\\u041f\\u0440\\u0438\\u043d\\u0442\\u0435\\u0440\"},{\"text\":\"\\\"\",\"color\":\"dark_green\"}]"
+        )
         // краткая инструкция
-        dispatchCommand(getConsoleSender(), "title @a actionbar {\"text\":\"\\u0421\\u0442\\u0430\\u043d\\u043e\\u0432\\u0438\\u0442\\u0435\\u0441\\u044c \\u043a\\u0443\\u0434\\u0430 \\u043d\\u0430\\u0434\\u043e, \\u0434\\u0435\\u0440\\u0436\\u0430 \\u0432 \\u0440\\u0443\\u043a\\u0435 \\u043f\\u0440\\u0430\\u0432. \\u0431\\u043b\\u043e\\u043a!\",\"underlined\":true,\"color\":\"gold\"}")
+        dispatchCommand(
+            getConsoleSender(),
+            "title @a actionbar {\"text\":\"\\u0421\\u0442\\u0430\\u043d\\u043e\\u0432\\u0438\\u0442\\u0435\\u0441\\u044c \\u043a\\u0443\\u0434\\u0430 \\u043d\\u0430\\u0434\\u043e, \\u0434\\u0435\\u0440\\u0436\\u0430 \\u0432 \\u0440\\u0443\\u043a\\u0435 \\u043f\\u0440\\u0430\\u0432. \\u0431\\u043b\\u043e\\u043a!\",\"underlined\":true,\"color\":\"gold\"}"
+        )
         // "Ваша картинка - ..."
-        dispatchCommand(getConsoleSender(), "title @a actionbar [\"\",{\"text\":\"\\u2191\",\"color\":\"#3CFF0A\"},{\"text\":\" \\u0412\\u0430\\u0448\\u0430 \\u043a\\u0430\\u0440\\u0442\\u0438\\u043d\\u043a\\u0430 -\",\"italic\":true,\"color\":\"yellow\"},{\"text\":\" ...\",\"color\":\"light_purple\"},{\"text\":\" \\u2191\",\"color\":\"#09FF00\"}]")
+        dispatchCommand(
+            getConsoleSender(),
+            "title @a actionbar [\"\",{\"text\":\"\\u2191\",\"color\":\"#3CFF0A\"},{\"text\":\" \\u0412\\u0430\\u0448\\u0430 \\u043a\\u0430\\u0440\\u0442\\u0438\\u043d\\u043a\\u0430 -\",\"italic\":true,\"color\":\"yellow\"},{\"text\":\" ...\",\"color\":\"light_purple\"},{\"text\":\" \\u2191\",\"color\":\"#09FF00\"}]"
+        )
         // изображение
         dispatchCommand(getConsoleSender(), "title @a times 10 20 10")
+        if (picture.rusNameSubt.isNullOrEmpty().not()) dispatchCommand(
+            getConsoleSender(),
+            "title @a subtitle ${picture.rusNameSubt}"
+        )
         dispatchCommand(getConsoleSender(), "title @a title ${picture.rusName}")
-        if (picture.rusNameSubt.isNullOrEmpty().not()) dispatchCommand(getConsoleSender(), "title @a subtitle ${picture.rusNameSubt}")
 
-        val hintRow = listOf<Block>(
-                world.getBlockAt(4, -52, 35),
-                world.getBlockAt(4, -52, 36),
-                world.getBlockAt(4, -52, 37),
-                world.getBlockAt(4, -52, 38),
-                world.getBlockAt(4, -52, 39),
-                world.getBlockAt(4, -52, 40),
-                world.getBlockAt(4, -52, 41),
-                world.getBlockAt(4, -52, 42),
-                world.getBlockAt(4, -52, 43),
-                world.getBlockAt(4, -52, 44),
+        val neutralZone = listOf<Block>(
+            world.getBlockAt(3, -51, 35),
+            world.getBlockAt(3, -51, 36),
+            world.getBlockAt(3, -51, 37),
+            world.getBlockAt(3, -51, 38),
+            world.getBlockAt(3, -51, 39),
+            world.getBlockAt(3, -51, 40),
+            world.getBlockAt(3, -51, 41),
+            world.getBlockAt(3, -51, 42),
+            world.getBlockAt(3, -51, 43),
+            world.getBlockAt(3, -51, 44)
+        )
 
+        val bonusZone = listOf<Block>(
+            // green
+            world.getBlockAt(2, -51, 35),
+            world.getBlockAt(2, -51, 36),
+            world.getBlockAt(2, -51, 37),
+            world.getBlockAt(2, -51, 38),
+            world.getBlockAt(2, -51, 39),
+            // light blue
+            world.getBlockAt(2, -51, 40),
+            world.getBlockAt(2, -51, 41),
+            world.getBlockAt(2, -51, 42),
+            world.getBlockAt(2, -51, 43),
+            world.getBlockAt(2, -51, 44)
+        )
+
+        val hintRow = listOf(
+            world.getBlockAt(4, -52, 35),
+            world.getBlockAt(4, -52, 36),
+            world.getBlockAt(4, -52, 37),
+            world.getBlockAt(4, -52, 38),
+            world.getBlockAt(4, -52, 39),
+            world.getBlockAt(4, -52, 40),
+            world.getBlockAt(4, -52, 41),
+            world.getBlockAt(4, -52, 42),
+            world.getBlockAt(4, -52, 43),
+            world.getBlockAt(4, -52, 44)
         )
 
 //        for (row in picture.grid.reversed()) {
@@ -266,13 +285,12 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
 //        }
 
         // Конец игры
-        isStarted = false
+        isGameStarted = false
         broadcast(Component.text("Игра окончена!", TextColor.color(0, 150, 190)))
         goingToPlay.forEach { player ->
             player.gameMode = GameMode.SURVIVAL
             player.teleport(Locations.WaitingPlate.loc)
         }
         goingToPlay.clear()
-        return
     }
 }
