@@ -154,62 +154,50 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
         broadcast(Component.text("Скоро начнём", TextColor.color(0, 150, 250)))
         isWaitingForPlayers = true
 
-        var waitingForPlayersBar: BossBar? = BossBar.bossBar(
-            Component.text("Ожидание игроков", TextColor.color(0, 200, 250)),
-            0.0F,
-            BossBar.Color.BLUE,
-            Overlay.NOTCHED_6
-        )
+//        var waitingForPlayersBar: BossBar? = BossBar.bossBar(
+//            Component.text("Ожидание игроков", TextColor.color(0, 200, 250)),
+//            0.0F,
+//            BossBar.Color.BLUE,
+//            Overlay.NOTCHED_6
+//        )
 
         goingToPlay.forEach { player ->
             player.teleport(Locations.WaitingPlate.loc)
             player.gameMode = GameMode.ADVENTURE
-
-            waitingForPlayersBar?.addViewer(player)
+            teamChoiceTimerBar?.addViewer(player)
         }
+        teamChoiceTimer.apply {
+            onTimeIsUp = {
+                isWaitingForPlayers = false
 
-        val countdown = Timer(100)
-        countdown.onTick = {
-            waitingForPlayersBar?.progress(countdown.seconds / 100.0F)
-        }
-        countdown.onTimeIsUp = {
-            teamChoiceTimer.apply {
-                onTimeIsUp = {
-                    isWaitingForPlayers = false
-                    goingToPlay.forEach { waitingForPlayersBar?.removeViewer(it) }
+                broadcast(Component.text("ИГРА СТАРТУЕТ!", TextColor.color(0, 200, 0)))
 
-                    broadcast(Component.text("ИГРА СТАРТУЕТ!", TextColor.color(0, 200, 0)))
+                // Игроки телепортируются под арку (случайную)
+                goingToPlay.forEach { it.teleport(arcs.random()) }
 
-                    // Игроки телепортируются под арку (случайную)
-                    goingToPlay.forEach {
-                        it.teleport(arcs.random())
-                    }
+                // Игроки телепортируются на игровое поле.
+                lightBlueTeam.forEach { player ->
+                    player.teleport(Locations.Light_Blue_Game_Area.loc)
+                }
+                greenTeam.forEach { player ->
+                    player.teleport(Locations.Green_Game_Area.loc)
+                }
 
-                    // Игроки телепортируются на игровое поле.
-                    lightBlueTeam.forEach { player ->
-                        player.teleport(Locations.Light_Blue_Game_Area.loc)
-                    }
-                    greenTeam.forEach { player ->
-                        player.teleport(Locations.Green_Game_Area.loc)
-                    }
+                // Убирается полоса
+                goingToPlay.forEach {
+                    teamChoiceTimerBar?.removeViewer(it)
+                }
 
-                    // Убирается полоса
-                    goingToPlay.forEach {
-                        teamChoiceTimerBar?.removeViewer(it)
-                    }
-
-                    if (goingToPlay.isNotEmpty() && goingToPlay.size >= requiredPlayersQty) {
-                        // set the game to started
-                        isGameStarted = true
-                        beginGame()
-                    } else {
-                        broadcast(Component.text("Ожидание игроков продолжается", TextColor.color(200, 80, 100)))
-                    }
+                if (goingToPlay.isNotEmpty() && goingToPlay.size >= requiredPlayersQty) {
+                    // set the game to started
+                    isGameStarted = true
+                    beginGame()
+                } else {
+                    broadcast(Component.text("Ожидание игроков продолжается", TextColor.color(200, 80, 100)))
                 }
             }
-            teamChoiceTimer.start()
         }
-        countdown.start()
+        teamChoiceTimer.start()
     }
 
     // Алгоритм игры
