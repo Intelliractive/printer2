@@ -52,14 +52,11 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
 
     // Полоса на выбор команд
     var teamChoiceTimerBar: BossBar? = BossBar.bossBar(
-        Component.text("Ожидание выбора команды", TextColor.color(252, 186, 3)),
-        0.0F,
-        BossBar.Color.RED,
-        Overlay.PROGRESS
+        Component.text("Ожидание выбора команды", TextColor.color(252, 186, 3)), 1f, BossBar.Color.RED, Overlay.PROGRESS
     )
 
     // Выбор команды
-    var teamChoiceTimer: Timer = Timer(15).apply {
+    var teamChoiceTimer: Timer = Timer(10).apply {
         onTick = { teamChoiceTimerBar?.progress(seconds.toFloat() / 10) }
     }
 
@@ -92,15 +89,13 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
                 goingToPlay.add(player)
                 player.sendMessage(
                     Component.text(
-                        "Ты в игре!",
-                        TextColor.color(0, 220, 0)
+                        "Ты в игре!", TextColor.color(0, 220, 0)
                     )
                 )
             })
         )
 
-        if (!isGameStarted || goingToPlay.size >= requiredPlayersQty || !isWaitingForPlayers)
-            waitForPlayers()
+        if (!isGameStarted || goingToPlay.size >= requiredPlayersQty || !isWaitingForPlayers) waitForPlayers()
 
         if (!isGameStarted && isWaitingForPlayers) {
             // Игрок выбирает команду
@@ -108,31 +103,23 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
 
             player.sendMessage(Component.text("Выбери команду!", TextColor.color(255, 0, 255)))
             player.sendMessage(
-                Component.text("[Голубая]", TextColor.color(0, 255, 255)).clickEvent(
-                    ClickEvent.callback {
+                Component.text("[Голубая]", TextColor.color(0, 255, 255))
+                    .clickEvent(ClickEvent.callback {
                         dispatchCommand(getConsoleSender(), "/execute as ${player.name} run team join lightBlue")
                         lightBlueTeam.add(player)
-                    }
-                )
+                    })
             )
             player.sendMessage(Component.text(" ---- ", TextColor.color(245, 245, 245)))
-            player.sendMessage(
-                Component.text("[Зелёная]", TextColor.color(0, 255, 0)).clickEvent(
-                    ClickEvent.callback {
-                        dispatchCommand(getConsoleSender(), "/execute as ${player.name} run team join green")
-                        greenTeam.add(player)
-                    }
-                )
-            )
+            player.sendMessage(Component.text("[Зелёная]", TextColor.color(0, 255, 0)).clickEvent(ClickEvent.callback {
+                dispatchCommand(getConsoleSender(), "/execute as ${player.name} run team join green")
+                greenTeam.add(player)
+            }))
         }
     }
 
     @EventHandler
     fun onPlayerQuit(event: PlayerQuitEvent) {
-        if (event.player in goingToPlay)
-            goingToPlay.remove(event.player)
-//        if (!isGameStarted)
-
+        if (event.player in goingToPlay) goingToPlay.remove(event.player)
     }
 
     val arcs: List<Location> = listOf(
@@ -153,13 +140,6 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
     fun waitForPlayers() {
         broadcast(Component.text("Скоро начнём", TextColor.color(0, 150, 250)))
         isWaitingForPlayers = true
-
-//        var waitingForPlayersBar: BossBar? = BossBar.bossBar(
-//            Component.text("Ожидание игроков", TextColor.color(0, 200, 250)),
-//            0.0F,
-//            BossBar.Color.BLUE,
-//            Overlay.NOTCHED_6
-//        )
 
         goingToPlay.forEach { player ->
             player.teleport(Locations.WaitingPlate.loc)
@@ -235,8 +215,7 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
         // изображение
         dispatchCommand(getConsoleSender(), "title @a times 10 20 10")
         if (picture.rusNameSubt.isNullOrEmpty().not()) dispatchCommand(
-            getConsoleSender(),
-            "title @a subtitle ${picture.rusNameSubt}"
+            getConsoleSender(), "title @a subtitle ${picture.rusNameSubt}"
         )
         dispatchCommand(getConsoleSender(), "title @a title ${picture.rusName}")
 
@@ -281,9 +260,32 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
             world.getBlockAt(4, -52, 44)
         )
 
-//        for (row in picture.grid.reversed()) {
-//
-//        }
+        var roundBar = BossBar.bossBar(
+            Component.text("Выберите блок и встаньте на место"), 1f, BossBar.Color.RED, Overlay.NOTCHED_10
+        )
+        var roundTimer = Timer(10).apply {
+            onTick = {
+//                broadcast(Component.text("Осталось ${seconds} секунд", TextColor.color(250, 120, 120)))
+                roundBar.progress(seconds.toFloat() / 10)
+            }
+
+            onTimeIsUp = {
+                goingToPlay.forEach {
+                    roundBar.removeViewer(it)
+
+                    when (it) {
+                        in greenTeam -> it.teleport(Locations.Green_Game_Area.loc)
+                        in lightBlueTeam -> it.teleport(Locations.Light_Blue_Game_Area.loc)
+                    }
+                }
+                seconds = 10
+            }
+        }
+
+        for (row in picture.grid.reversed()) {
+            goingToPlay.forEach { roundBar.addViewer(it) }
+            roundTimer.start()
+        }
 
         // Конец игры
         isGameStarted = false
