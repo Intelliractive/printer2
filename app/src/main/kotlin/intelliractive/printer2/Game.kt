@@ -263,7 +263,7 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
         var roundBar = BossBar.bossBar(
             Component.text("Выберите блок и встаньте на место"), 1f, BossBar.Color.RED, Overlay.NOTCHED_10
         )
-        var roundTimer = Timer(10).apply {
+        var roundTimer = RoundTimer(10).apply {
             onTick = {
 //                broadcast(Component.text("Осталось ${seconds} секунд", TextColor.color(250, 120, 120)))
                 roundBar.progress(seconds.toFloat() / 10)
@@ -284,6 +284,7 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
 
         for (row in picture.grid.reversed()) {
             goingToPlay.forEach { roundBar.addViewer(it) }
+            roundTimer.picRow = row
             roundTimer.start()
         }
 
