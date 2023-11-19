@@ -37,6 +37,8 @@ import org.bukkit.event.server.ServerLoadEvent
 class Game(val plugin: App) : Listener { // plugin не трогать! (нужно для Bukkit заданий)
     var world = getWorld("world")!!
 
+    val requiredPlayersQty = 10
+
     // Состояние игры
     var isGameStarted = false
     var isWaitingForPlayers = false
@@ -97,7 +99,7 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
             })
         )
 
-        if (!isGameStarted || goingToPlay.size <= 10)
+        if (!isGameStarted || goingToPlay.size >= requiredPlayersQty || !isWaitingForPlayers)
             waitForPlayers()
 
         if (!isGameStarted && isWaitingForPlayers) {
@@ -129,7 +131,8 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
     fun onPlayerQuit(event: PlayerQuitEvent) {
         if (event.player in goingToPlay)
             goingToPlay.remove(event.player)
-//        if (!isGameStarted &&)
+//        if (!isGameStarted)
+
     }
 
     val arcs: List<Location> = listOf(
@@ -148,10 +151,15 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
 
     // Отсчёт до игры
     fun waitForPlayers() {
-//        broadcast(Component.text("Скоро начнём", TextColor.color(0, 150, 250)))
+        broadcast(Component.text("Скоро начнём", TextColor.color(0, 150, 250)))
         isWaitingForPlayers = true
 
-        var waitingForPlayersBar: BossBar? = BossBar.bossBar(Component.text("Ожидание игроков", TextColor.color(0, 200, 250)), 0.0F, BossBar.Color.BLUE, Overlay.NOTCHED_6)
+        var waitingForPlayersBar: BossBar? = BossBar.bossBar(
+            Component.text("Ожидание игроков", TextColor.color(0, 200, 250)),
+            0.0F,
+            BossBar.Color.BLUE,
+            Overlay.NOTCHED_6
+        )
 
         goingToPlay.forEach { player ->
             player.teleport(Locations.WaitingPlate.loc)
@@ -165,36 +173,41 @@ class Game(val plugin: App) : Listener { // plugin не трогать! (нуж�
             waitingForPlayersBar?.progress(countdown.seconds / 100.0F)
         }
         countdown.onTimeIsUp = {
-            teamChoiceTimer.onTick = {
-                isWaitingForPlayers = false
-                goingToPlay.forEach { waitingForPlayersBar?.removeViewer(it) }
+            teamChoiceTimer.apply {
+                onTimeIsUp = {
+                    isWaitingForPlayers = false
+                    goingToPlay.forEach { waitingForPlayersBar?.removeViewer(it) }
 
-                broadcast(Component.text("ИГРА СТАРТУЕТ!", TextColor.color(0, 200, 0)))
+                    broadcast(Component.text("ИГРА СТАРТУЕТ!", TextColor.color(0, 200, 0)))
 
-                // Игроки телепортируются под арку (случайную)
-                goingToPlay.forEach {
-                    it.teleport(arcs.random())
-                }
+                    // Игроки телепортируются под арку (случайную)
+                    goingToPlay.forEach {
+                        it.teleport(arcs.random())
+                    }
 
-                // Игроки телепортируются на игровое поле.
-                lightBlueTeam.forEach { player ->
-                    player.teleport(Locations.Light_Blue_Game_Area.loc)
-                }
-                greenTeam.forEach { player ->
-                    player.teleport(Locations.Green_Game_Area.loc)
-                }
+                    // Игроки телепортируются на игровое поле.
+                    lightBlueTeam.forEach { player ->
+                        player.teleport(Locations.Light_Blue_Game_Area.loc)
+                    }
+                    greenTeam.forEach { player ->
+                        player.teleport(Locations.Green_Game_Area.loc)
+                    }
 
-                // Убирается полоса
-                goingToPlay.forEach {
-                    teamChoiceTimerBar?.removeViewer(it)
-                }
+                    // Убирается полоса
+                    goingToPlay.forEach {
+                        teamChoiceTimerBar?.removeViewer(it)
+                    }
 
-                if (goingToPlay.isNotEmpty()) {
-                    // set the game to started
-                    isGameStarted = true
-                    beginGame()
+                    if (goingToPlay.isNotEmpty() && goingToPlay.size >= requiredPlayersQty) {
+                        // set the game to started
+                        isGameStarted = true
+                        beginGame()
+                    } else {
+                        broadcast(Component.text("Ожидание игроков продолжается", TextColor.color(200, 80, 100)))
+                    }
                 }
             }
+            teamChoiceTimer.start()
         }
         countdown.start()
     }
